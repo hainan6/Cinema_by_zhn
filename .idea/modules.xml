@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/Cinema_by_zhn.iml" filepath="$PROJECT_DIR$/.idea/Cinema_by_zhn.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cinema/cinema.iml" filepath="$PROJECT_DIR$/cinema/cinema.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cinema/libs/jBCrypt-0.4/src/jBCrypt-0.4.iml" filepath="$PROJECT_DIR$/cinema/libs/jBCrypt-0.4/src/jBCrypt-0.4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cinema/libs/jBCrypt-0.4/jBCrypt-0.41.iml" filepath="$PROJECT_DIR$/cinema/libs/jBCrypt-0.4/jBCrypt-0.41.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cinema/untitled/untitled.iml" filepath="$PROJECT_DIR$/cinema/untitled/untitled.iml" />
+    </modules>
+  </component>
+</project>
