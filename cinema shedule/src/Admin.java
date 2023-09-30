@@ -8,7 +8,7 @@ public class Admin {
     String username;
     String password;
 
-    Moive moive = new Moive();
+    Movie movie = new Movie();
     User user = new User();
     static Link_MySql linkMySql = new Link_MySql();
 

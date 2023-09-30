@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Scanner;
-public class Moive {
+public class Movie {
     String name;//片名
      String director;//导演
      String star;//主演
@@ -13,18 +13,18 @@ public class Moive {
 
     String duration;//时长(单位：min)
 
-     ArrayList arrayListMoives = new ArrayList<Moive>();
+     ArrayList arrayListMovies = new ArrayList<Movie>();
 
 
     static Link_MySql linkMySql = new Link_MySql();
-    public Moive(String name, String director, String star, String synopsis, String duration) {
+    public Movie(String name, String director, String star, String synopsis, String duration) {
         this.name = name;
         this.director = director;
         this.star = star;
         this.synopsis = synopsis;
         this.duration = duration;
     }
-    public Moive(){
+    public Movie(){
     }
 
 
@@ -33,7 +33,7 @@ public class Moive {
         return "电影名:"+this.name+"\n导演:"+this.director+"\n主演:"+this.star+"\n简介:"+this.synopsis+"\n时长"+this.duration+"min\n";
     }
 
-    void addMoivesinform(){
+    void addMoviesinform(){
         Scanner read = new Scanner(System.in);
 
         System.out.println("电影姓名:");
@@ -48,30 +48,30 @@ public class Moive {
         this.duration=read.next();
     }
 
-    void printMoives(ArrayList arrayListMoives){
-        if(arrayListMoives == null){
+    void printMovies(ArrayList arrayListMovies){
+        if(arrayListMovies == null){
             System.out.println("无数据");
             return;
         }
         //System.out.println("电影名\t\t"+"导演\t\t"+"主演\t\t"+"简介\t\t"+"时长\n");
-        for (int i = 0; i <arrayListMoives.size() ; i++) {
-            System.out.println(arrayListMoives.get(i));
+        for (int i = 0; i <arrayListMovies.size() ; i++) {
+            System.out.println(arrayListMovies.get(i));
         }
     }
 
 
-    boolean insertMoives(Moive moive) throws SQLException, ClassNotFoundException {
+    boolean insertMovies(Movie movie) throws SQLException, ClassNotFoundException {
         Connection connection = linkMySql.linkMysql();
 
         if(connection != null){
             try{
-                String insertQuery = "insert into moives (name,director,star,synopsis,duration)values(?,?,?,?,?)";
+                String insertQuery = "insert into movies (name,director,star,synopsis,duration)values(?,?,?,?,?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
-                preparedStatement.setString(1, moive.name);
-                preparedStatement.setString(2, moive.director);
-                preparedStatement.setString(3, moive.star);
-                preparedStatement.setString(4, moive.synopsis);
-                preparedStatement.setString(5, moive.duration);
+                preparedStatement.setString(1, movie.name);
+                preparedStatement.setString(2, movie.director);
+                preparedStatement.setString(3, movie.star);
+                preparedStatement.setString(4, movie.synopsis);
+                preparedStatement.setString(5, movie.duration);
 
                 int rowsAffected = preparedStatement.executeUpdate();
                 connection.close();//关闭连接
@@ -84,48 +84,54 @@ public class Moive {
         }
         return false;
     }
-    boolean  updatemoive() throws SQLException, ClassNotFoundException {
-        Connection connection = linkMySql.linkMysql();
+    boolean updatemovie(Movie movie) throws SQLException, ClassNotFoundException {
+//        Connection connection = linkMySql.linkMysql();
+//        if(connection != null){
+//            try{
+//
+//                //todo 完善updatemovies
+//                String updateSQL = "UPDATE movies SET duration = ? WHERE name = ?";
+//                PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);//执行sql语句
+//
+//                // 设置要更新的值和条件
+//                preparedStatement.setInt(1, 50);
+//
+//                preparedStatement.setString(2, "1"); // 根据ID更新数据
+//
+//                // 执行更新操作
+//                int rowsUpdated = preparedStatement.executeUpdate();
+//
+//                if (rowsUpdated > 0) {
+//                    System.out.println("更新成功，影响行数: " + rowsUpdated);
+//                } else {
+//                    System.out.println("未更新任何行");
+//                }
+//
+//                connection.close();//关闭连接
+//
+//            }
+//            catch (Exception e){
+//                e.printStackTrace();
+//            }
+//            return true;
+//        }
+//
+        boolean tag1 = deleteMovieByname(movie.name);
 
-        if(connection != null){
-            try{
-                Moive moive = new Moive();
-                System.out.println();
-                //todo 完善updatemoives
-                String updateSQL = "UPDATE moives SET duration = ? ,WHERE name = ?";
-                PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);//执行sql语句
+        boolean tag2 = insertMovies(movie);
 
-                // 设置要更新的值和条件
-                preparedStatement.setInt(1, 50);
-
-                preparedStatement.setString(2, "1"); // 根据ID更新数据
-
-                // 执行更新操作
-                int rowsUpdated = preparedStatement.executeUpdate();
-
-                if (rowsUpdated > 0) {
-                    System.out.println("更新成功，影响行数: " + rowsUpdated);
-                } else {
-                    System.out.println("未更新任何行");
-                }
-
-                connection.close();//关闭连接
-
-            }
-            catch (Exception e){
-                e.printStackTrace();
-            }
-            return true;
-        }
-        else
+        if(tag1 == false){
             return false;
-
+        }
+        if (tag1 && tag2){
+            return true;
+        }else return false;
     }
-    public  ArrayList<Moive> readInformation() throws SQLException, ClassNotFoundException {
+    public  ArrayList<Movie> readInformation() throws SQLException, ClassNotFoundException {
 
         Connection connection = linkMySql.linkMysql();
         if(connection != null){
-            String selectSQL = "SELECT * FROM moives";
+            String selectSQL = "SELECT * FROM MOVIES";
             // 创建PreparedStatement对象，用于执行SQL查询
             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
 
@@ -134,13 +140,13 @@ public class Moive {
 
             // 遍历结果集并输出数据
             while (resultSet.next()) {
-                Moive moive = new Moive();
-                moive.name = resultSet.getString("name");
-                moive.director = resultSet.getString("director");
-                moive.star = resultSet.getString("star");
-                moive.synopsis = resultSet.getString("synopsis");
-                moive.duration = resultSet.getString("duration");
-                arrayListMoives.add(moive);
+                Movie movie = new Movie();
+                movie.name = resultSet.getString("name");
+                movie.director = resultSet.getString("director");
+                movie.star = resultSet.getString("star");
+                movie.synopsis = resultSet.getString("synopsis");
+                movie.duration = resultSet.getString("duration");
+                arrayListMovies.add(movie);
             }
 
             // 关闭连接
@@ -148,7 +154,7 @@ public class Moive {
             preparedStatement.close();
             connection.close();
 
-            return arrayListMoives;
+            return arrayListMovies;
         }
         else{
             return null;
@@ -258,7 +264,7 @@ String sb(){
                 try{
 
                     String updateSQL = "UPDATE screeningroom1 SET a"+col+"= ? WHERE rol = ?";
-                    //String updateSQL = "UPDATE moives SET duration = ? WHERE name = ?";
+                    //String updateSQL = "UPDATE movies SET duration = ? WHERE name = ?";
 
                     PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);//执行sql语句
 
@@ -325,7 +331,7 @@ String sb(){
     }
 
 
-    public static boolean deleteMoiveByname(String moiveName) {
+    public static boolean deleteMovieByname(String movieName) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
@@ -334,11 +340,11 @@ String sb(){
             connection = linkMySql.linkMysql();
 
             // SQL语句，根据用户名删除用户信息
-            String deleteSQL = "DELETE FROM moives WHERE name = ?";
+            String deleteSQL = "DELETE FROM movies WHERE name = ?";
             preparedStatement = connection.prepareStatement(deleteSQL);
 
             // 设置参数
-            preparedStatement.setString(1, moiveName);
+            preparedStatement.setString(1, movieName);
 
             // 执行SQL语句
             int rowsAffected = preparedStatement.executeUpdate();
@@ -355,9 +361,7 @@ String sb(){
     }
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        Moive moive = new Moive("1","2","3","4","5");
-        //moive.printMoives(moive.readInformation());
-        //moive.printScreenSeat(readScreeningseat());
-        moive.selectSeats();
+        Movie movie = new Movie("1","2","3","4","5");
+        movie.selectSeats();
         }
 }

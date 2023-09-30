@@ -96,10 +96,10 @@ public class MoviesShedule {
 
         if(connection != null){
             try{
-                Moive moive = new Moive();
+                Movie movie = new Movie();
                 System.out.println();
                 //todo 完善updatemoives
-                String updateSQL = "UPDATE moiveschedule SET duration = ? WHERE name = ?";
+                String updateSQL = "UPDATE movieschedule SET showtime = ? WHERE movieTitle = ?";
                 PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);//执行sql语句
 
                 // 设置要更新的值和条件
@@ -130,13 +130,13 @@ public class MoviesShedule {
     }
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        MoviesShedule moviesShedule = new MoviesShedule("dfsf",51,3);
-       // moviesShedule.setMoivesShedule(moviesShedule);
-        ArrayList<MoviesShedule> moviesShedules = moviesShedule.readmoviesSheduleList();
-        System.out.println(moviesShedules.size());
-        for (int i = 0; i < moviesShedules.size(); i++) {
-            System.out.println(moviesShedules.get(i).toString());
-        }
+        MoviesShedule moviesShedule = new MoviesShedule("dfsf",51,0);
+        moviesShedule.setMoivesShedule(moviesShedule);
+//        ArrayList<MoviesShedule> moviesShedules = moviesShedule.readmoviesSheduleList();
+//        System.out.println(moviesShedules.size());
+//        for (int i = 0; i < moviesShedules.size(); i++) {
+//            System.out.println(moviesShedules.get(i).toString());
+//        }
     }
 
 }

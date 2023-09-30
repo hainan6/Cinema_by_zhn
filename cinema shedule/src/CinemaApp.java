@@ -815,99 +815,99 @@ public class CinemaApp {
         managerSystemframe.setSize(400, 200);
         managerSystemframe.setLayout(new GridLayout(3, 1));
 
-        JButton moivesManagementButton = new JButton("影片管理");
-        JButton arrangeMoivesManagementButton = new JButton("排片管理");
+        JButton moviesManagementButton = new JButton("影片管理");
+        JButton arrangeMoviesManagementButton = new JButton("排片管理");
         JButton logoutButton = new JButton("退出登录");
 
-        managerSystemframe.add(moivesManagementButton);
-        managerSystemframe.add(arrangeMoivesManagementButton);
+        managerSystemframe.add(moviesManagementButton);
+        managerSystemframe.add(arrangeMoviesManagementButton);
         managerSystemframe.add(logoutButton);
 
-        moivesManagementButton.addActionListener(new ActionListener() {
+        moviesManagementButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 managerSystemframe.setVisible(false);
-                JDialog moivesManagementDialog = new JDialog(managerSystemframe, "用户管理");
-                moivesManagementDialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                moivesManagementDialog.setSize(300, 300);
-                moivesManagementDialog.setLayout(new GridLayout(6, 1));
+                JDialog moviesManagementDialog = new JDialog(managerSystemframe, "用户管理");
+                moviesManagementDialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                moviesManagementDialog.setSize(300, 300);
+                moviesManagementDialog.setLayout(new GridLayout(6, 1));
 
-                JButton listMoivesButton = new JButton("列出所有影片信息");
-                JButton addMoivesButton = new JButton("添加影片信息");
-                JButton updateMoivesButton = new JButton("修改影片信息");
-                JButton deleteMoivesButton = new JButton("删除影片信息");
-                JButton findMoivesButton = new JButton("查询影片信息");
+                JButton listMoviesButton = new JButton("列出所有影片信息");
+                JButton addMoviesButton = new JButton("添加影片信息");
+                JButton updateMoviesButton = new JButton("修改影片信息");
+                JButton deleteMoviesButton = new JButton("删除影片信息");
+                JButton findMoviesButton = new JButton("查询影片信息");
                 JButton backButton = new JButton("返回上一步");
 
 
 
-                moivesManagementDialog.add(listMoivesButton);
-                moivesManagementDialog.add(addMoivesButton);
-                moivesManagementDialog.add(updateMoivesButton);
-                moivesManagementDialog.add(deleteMoivesButton);
-                moivesManagementDialog.add(findMoivesButton);
-                moivesManagementDialog.add(backButton);
+                moviesManagementDialog.add(listMoviesButton);
+                moviesManagementDialog.add(addMoviesButton);
+                moviesManagementDialog.add(updateMoviesButton);
+                moviesManagementDialog.add(deleteMoviesButton);
+                moviesManagementDialog.add(findMoviesButton);
+                moviesManagementDialog.add(backButton);
 
-                listMoivesButton.addActionListener(new ActionListener() {
+                listMoviesButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        Moive moive = new Moive();
-                        ArrayList<Moive> moivesList = new ArrayList<>();
+                        Movie movie = new Movie();
+                        ArrayList<Movie> moviesList = new ArrayList<>();
 
-                        JTextArea moivesListArea = new JTextArea(30, 50);
-                        moivesListArea.setEditable(false); // 禁止编辑文本区域
-                        moivesListArea.setLineWrap(true);
-                        moivesListArea.setText("");
+                        JTextArea moviesListArea = new JTextArea(30, 50);
+                        moviesListArea.setEditable(false); // 禁止编辑文本区域
+                        moviesListArea.setLineWrap(true);
+                        moviesListArea.setText("");
 
                         try {
-                            moivesList=moive.readInformation();
+                            moviesList= movie.readInformation();
                         } catch (SQLException ex) {
                             throw new RuntimeException(ex);
                         } catch (ClassNotFoundException ex) {
                             throw new RuntimeException(ex);
                         }
-                        JDialog moivesListDialog = new JDialog(managerSystemframe, "电影列表");
-                        moivesListDialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                        moivesListDialog.setLayout(new BorderLayout());
-                        moivesListDialog.addWindowListener(new WindowAdapter() {
+                        JDialog moviesListDialog = new JDialog(managerSystemframe, "电影列表");
+                        moviesListDialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        moviesListDialog.setLayout(new BorderLayout());
+                        moviesListDialog.addWindowListener(new WindowAdapter() {
                             @Override
                             public void windowClosing(WindowEvent e) {
-                                moivesListArea.setText("");
-                                moivesListDialog.dispose();
+                                moviesListArea.setText("");
+                                moviesListDialog.dispose();
                             }
                         });
-                        moivesListArea.setText("");
+                        moviesListArea.setText("");
                         // 将用户列表信息添加到文本区域
                         StringBuilder userListText = new StringBuilder();
-                        for (Moive moive1 : moivesList) {
-                            userListText.append("电影名: ").append(moive1.name).append("\n");
-                            userListText.append("导演: ").append(moive1.director).append("\n");
-                            userListText.append("主演: ").append(moive1.star).append("\n");
-                            userListText.append("简介: ").append(moive1.synopsis).append("\n");
-                            userListText.append("时长：").append(moive1.duration).append("min\n");
+                        for (Movie movie1 : moviesList) {
+                            userListText.append("电影名: ").append(movie1.name).append("\n");
+                            userListText.append("导演: ").append(movie1.director).append("\n");
+                            userListText.append("主演: ").append(movie1.star).append("\n");
+                            userListText.append("简介: ").append(movie1.synopsis).append("\n");
+                            userListText.append("时长：").append(movie1.duration).append("min\n");
                             userListText.append("_________________________\n");
                         }
-                        moivesListArea.setText(userListText.toString());
-                        moivesListArea.paintImmediately(moivesListArea.getBounds());
-                        JScrollPane scrollPane = new JScrollPane(moivesListArea);
-                        moivesListDialog.add(scrollPane, BorderLayout.CENTER);
+                        moviesListArea.setText(userListText.toString());
+                        moviesListArea.paintImmediately(moviesListArea.getBounds());
+                        JScrollPane scrollPane = new JScrollPane(moviesListArea);
+                        moviesListDialog.add(scrollPane, BorderLayout.CENTER);
 
-                        moivesListDialog.pack();
-                        moivesListDialog.setVisible(true);
+                        moviesListDialog.pack();
+                        moviesListDialog.setVisible(true);
                     }
                 });
 
-                addMoivesButton.addActionListener(new ActionListener() {//添加电影信息
+                addMoviesButton.addActionListener(new ActionListener() {//添加电影信息
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        moivesManagementDialog.setVisible(false);
+                        moviesManagementDialog.setVisible(false);
                         JTextField movieNameField, directorField, actorsField, durationField;
                          JTextArea descriptionArea;
-                         JDialog moiveInfoinput = new JDialog(managerSystemframe,"电影信息输入");
-                        moiveInfoinput.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                         JDialog movieInfoinput = new JDialog(managerSystemframe,"电影信息输入");
+                        movieInfoinput.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-                        moiveInfoinput.setSize(400, 300);
-                        moiveInfoinput.setLocationRelativeTo(null);
+                        movieInfoinput.setSize(400, 300);
+                        movieInfoinput.setLocationRelativeTo(null);
 
                         JPanel panel = new JPanel(new GridBagLayout());
                         GridBagConstraints constraints = new GridBagConstraints();
@@ -977,35 +977,35 @@ public class CinemaApp {
                         constraints.gridy = 5;
                         panel.add(okButton, constraints);
 
-                        moiveInfoinput.setVisible(true);
+                        movieInfoinput.setVisible(true);
 
                         // 添加确定按钮的点击事件监听器
                         okButton.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 // 在这里获取输入的电影信息并进行处理
-                                Moive moive = new Moive();
+                                Movie movie = new Movie();
 
-                                moive.name = movieNameField.getText();
-                                moive.director = directorField.getText();
-                                moive.star = actorsField.getText();
-                                moive.synopsis = descriptionArea.getText();
-                                moive.duration = durationField.getText();
+                                movie.name = movieNameField.getText();
+                                movie.director = directorField.getText();
+                                movie.star = actorsField.getText();
+                                movie.synopsis = descriptionArea.getText();
+                                movie.duration = durationField.getText();
 
                                 try {
-                                    if(moive.isEmpty()){
-                                        JOptionPane.showMessageDialog(moiveInfoinput, "请完整输入电影信息!");
+                                    if(movie.isEmpty()){
+                                        JOptionPane.showMessageDialog(movieInfoinput, "请完整输入电影信息!");
                                     }
                                     else{
-                                        if (moive.insertMoives(moive)) {
-                                            JOptionPane.showMessageDialog(moiveInfoinput, "添加影片成功!");
-                                            moiveInfoinput.dispose();
-                                            moivesManagementDialog.setVisible(true);
+                                        if (movie.insertMovies(movie)) {
+                                            JOptionPane.showMessageDialog(movieInfoinput, "添加影片成功!");
+                                            movieInfoinput.dispose();
+                                            moviesManagementDialog.setVisible(true);
                                         }
                                         else{
-                                            JOptionPane.showMessageDialog(moiveInfoinput, "添加影片失败!");
-                                            moiveInfoinput.dispose();
-                                            moivesManagementDialog.setVisible(true);
+                                            JOptionPane.showMessageDialog(movieInfoinput, "添加影片失败!");
+                                            movieInfoinput.dispose();
+                                            moviesManagementDialog.setVisible(true);
                                         }
                                     }
 
@@ -1023,25 +1023,26 @@ public class CinemaApp {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 // 返回上一步，关闭弹窗
-                                moiveInfoinput.dispose();
-                                moivesManagementDialog.setVisible(true);
+                                movieInfoinput.dispose();
+                                moviesManagementDialog.setVisible(true);
                             }
                         });
 
-                        moiveInfoinput.getContentPane().add(panel);
+                        movieInfoinput.getContentPane().add(panel);
                     }
                 });
 
-                updateMoivesButton.addActionListener(new ActionListener() {// 修改电影信息
+                updateMoviesButton.addActionListener(new ActionListener() {// 修改电影信息
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         // TODO: 2023-09-29  电影信息修改
+                        CinemaApp.moviesList(managerSystemframe);
                         JTextField movieNameField, directorField, actorsField, durationField;
                         JTextArea descriptionArea;
-                        JDialog moiveInfoUpdate = new JDialog(managerSystemframe,"电影信息更新");
-                        moiveInfoUpdate.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                        moiveInfoUpdate.setSize(400, 300);
-                        moiveInfoUpdate.setLocationRelativeTo(null);
+                        JDialog movieInfoUpdate = new JDialog(managerSystemframe,"电影信息更新");
+                        movieInfoUpdate.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        movieInfoUpdate.setSize(400, 300);
+                        movieInfoUpdate.setLocationRelativeTo(null);
 
                         JPanel panel = new JPanel(new GridBagLayout());
                         GridBagConstraints constraints = new GridBagConstraints();
@@ -1111,35 +1112,35 @@ public class CinemaApp {
                         constraints.gridy = 5;
                         panel.add(okButton, constraints);
 
-                        moiveInfoUpdate.setVisible(true);
+                        movieInfoUpdate.setVisible(true);
 
                         // 添加确定按钮的点击事件监听器
                         okButton.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 // 在这里获取输入的电影信息并进行处理
-                                Moive moive = new Moive();
+                                Movie movie = new Movie();
 
-                                moive.name = movieNameField.getText();
-                                moive.director = directorField.getText();
-                                moive.star = actorsField.getText();
-                                moive.synopsis = descriptionArea.getText();
-                                moive.duration = durationField.getText();
+                                movie.name = movieNameField.getText();
+                                movie.director = directorField.getText();
+                                movie.star = actorsField.getText();
+                                movie.synopsis = descriptionArea.getText();
+                                movie.duration = durationField.getText();
 
                                 try {
-                                    if(moive.isEmpty()){
-                                        JOptionPane.showMessageDialog(moiveInfoUpdate, "请完整输入电影信息!");
+                                    if(movie.isEmpty()){
+                                        JOptionPane.showMessageDialog(movieInfoUpdate, "请完整输入电影信息!");
                                     }
                                     else{
-                                        if (moive.insertMoives(moive)) {
-                                            JOptionPane.showMessageDialog(moiveInfoUpdate, "添加影片成功!");
-                                            moiveInfoUpdate.dispose();
-                                            moivesManagementDialog.setVisible(true);
+                                        if (movie.updatemovie(movie)) {
+                                            JOptionPane.showMessageDialog(movieInfoUpdate, "修改影片信息成功!");
+                                            movieInfoUpdate.dispose();
+                                            moviesManagementDialog.setVisible(true);
                                         }
                                         else{
-                                            JOptionPane.showMessageDialog(moiveInfoUpdate, "添加影片失败!");
-                                            moiveInfoUpdate.dispose();
-                                            moivesManagementDialog.setVisible(true);
+                                            JOptionPane.showMessageDialog(movieInfoUpdate, "暂无该影片信息!");
+                                            movieInfoUpdate.dispose();
+                                            moviesManagementDialog.setVisible(true);
                                         }
                                     }
 
@@ -1157,57 +1158,57 @@ public class CinemaApp {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 // 返回上一步，关闭弹窗
-                                moiveInfoUpdate.dispose();
+                                movieInfoUpdate.dispose();
                             }
                         });
 
-                        moiveInfoUpdate.getContentPane().add(panel);
+                        movieInfoUpdate.getContentPane().add(panel);
                         //todo 修改信息
                     }
 
                 });
 
-                deleteMoivesButton.addActionListener(new ActionListener() {//   删除影片
+                deleteMoviesButton.addActionListener(new ActionListener() {//   删除影片
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         //todo 删除影片
-                        JFrame deleteMoiveframe = new JFrame("电影信息删除");
-                        deleteMoiveframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                        deleteMoiveframe.setSize(400, 150);
-                        deleteMoiveframe.setLayout(new GridLayout(2, 1));
+                        JFrame deleteMovieframe = new JFrame("电影信息删除");
+                        deleteMovieframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        deleteMovieframe.setSize(400, 150);
+                        deleteMovieframe.setLayout(new GridLayout(2, 1));
 
-                        JLabel moivenameLabel = new JLabel("请输入电影名:");
-                        JTextField moivenameField = new JTextField(20); // 增加文本框大小
+                        JLabel movieNameLabel = new JLabel("请输入电影名:");
+                        JTextField movieNameField = new JTextField(20); // 增加文本框大小
                         JButton confirmButton = new JButton("确认");
                         JButton backButton = new JButton("返回上一步");
 
                         JPanel inputPanel = new JPanel(new GridBagLayout()); // 使用GridBagLayout布局
                         GridBagConstraints constraints = new GridBagConstraints();
                         constraints.insets = new Insets(5, 5, 5, 5); // 增加间距
-                        inputPanel.add(moivenameLabel, constraints);
+                        inputPanel.add(movieNameLabel, constraints);
 
                         constraints.gridx = 1;
-                        inputPanel.add(moivenameField, constraints);
+                        inputPanel.add(movieNameField, constraints);
 
                         JPanel buttonPanel = new JPanel();
                         buttonPanel.setLayout(new FlowLayout());
                         buttonPanel.add(confirmButton);
                         buttonPanel.add(backButton);
 
-                        deleteMoiveframe.add(inputPanel);
-                        deleteMoiveframe.add(buttonPanel);
+                        deleteMovieframe.add(inputPanel);
+                        deleteMovieframe.add(buttonPanel);
 
                         confirmButton.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                String moivename = moivenameField.getText();
+                                String movieName = movieNameField.getText();
                                 // 弹出确认删除窗口
-                                JDialog deletedialog = new JDialog(deleteMoiveframe, "确认删除信息");
+                                JDialog deletedialog = new JDialog(deleteMovieframe, "确认删除信息");
                                 deletedialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                                 deletedialog.setSize(300, 150);
                                 deletedialog.setLayout(new GridLayout(2, 1));
 
-                                JLabel confirmationLabel = new JLabel("确认删除电影 " + moivename + " 的信息吗？");
+                                JLabel confirmationLabel = new JLabel("确认删除电影 " + movieName + " 的信息吗？");
                                 JButton deleteButton = new JButton("删除");
                                 JButton cancelButton = new JButton("取消");
 
@@ -1227,14 +1228,14 @@ public class CinemaApp {
                                     @Override
                                     public void actionPerformed(ActionEvent e) {
                                         // 在这里执行删除信息的逻辑
-                                        //todo delete moive
-                                        if (Moive.deleteMoiveByname(moivename)){
+                                        //todo delete movie
+                                        if (Movie.deleteMovieByname(movieName)){
                                             JOptionPane.showMessageDialog(deletedialog, "电影信息已删除。");
-                                            deleteMoiveframe.dispose();
+                                            deleteMovieframe.dispose();
                                         }
                                         else{
                                             JOptionPane.showMessageDialog(deletedialog, "暂无该电影信息。");
-                                            deleteMoiveframe.dispose();
+                                            deleteMovieframe.dispose();
                                         }
                                         deletedialog.dispose();
                                     }
@@ -1256,28 +1257,28 @@ public class CinemaApp {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 // 返回上一步，关闭当前窗口
-                                deleteMoiveframe.dispose();
-                                moivesManagementDialog.setVisible(true);
+                                deleteMovieframe.dispose();
+                                moviesManagementDialog.setVisible(true);
                             }
                         });
 
-                        deleteMoiveframe.setVisible(true);
+                        deleteMovieframe.setVisible(true);
                         //todo 删除影片
                     }
                 });
 
-                findMoivesButton.addActionListener(new ActionListener() {
+                findMoviesButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         //todo 查找电影信息
                         // 在这里执行查询用户信息的逻辑
-                        JFrame findMoiveframe = new JFrame("电影信息查询");
-                        findMoiveframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                        findMoiveframe.setSize(400, 150);
-                        findMoiveframe.setLayout(new GridLayout(2, 1));
+                        JFrame findMovieframe = new JFrame("电影信息查询");
+                        findMovieframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        findMovieframe.setSize(400, 150);
+                        findMovieframe.setLayout(new GridLayout(2, 1));
 
-                        JLabel moiveNameLabel = new JLabel("请输入用户名:");
-                        JTextField moiveNameField = new JTextField(20); // 增加文本框大小
+                        JLabel movieNameLabel = new JLabel("请输入用户名:");
+                        JTextField movieNameField = new JTextField(20); // 增加文本框大小
 
                         JButton confirmButton = new JButton("确认");
                         JButton backButton = new JButton("返回上一步");
@@ -1285,30 +1286,30 @@ public class CinemaApp {
                         JPanel inputPanel = new JPanel(new GridBagLayout()); // 使用GridBagLayout布局
                         GridBagConstraints constraints = new GridBagConstraints();
                         constraints.insets = new Insets(5, 5, 5, 5); // 增加间距
-                        inputPanel.add(moiveNameLabel, constraints);
+                        inputPanel.add(movieNameLabel, constraints);
 
                         constraints.gridx = 1;
-                        inputPanel.add(moiveNameField, constraints);
+                        inputPanel.add(movieNameField, constraints);
 
                         JPanel buttonPanel = new JPanel();
                         buttonPanel.setLayout(new FlowLayout());
                         buttonPanel.add(confirmButton);
                         buttonPanel.add(backButton);
 
-                        findMoiveframe.add(inputPanel);
-                        findMoiveframe.add(buttonPanel);
+                        findMovieframe.add(inputPanel);
+                        findMovieframe.add(buttonPanel);
 
-                        findMoiveframe.setVisible(true);
+                        findMovieframe.setVisible(true);
 
                         confirmButton.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                String findMoiveName = moiveNameField.getText();
-                                Moive moive = new Moive();
-                                ArrayList<Moive> moivesArrayList = new ArrayList<>();
+                                String findMovieName = movieNameField.getText();
+                                Movie movie = new Movie();
+                                ArrayList<Movie> moviesArrayList = new ArrayList<>();
 
                                 try {
-                                    moivesArrayList = moive.readInformation();
+                                    moviesArrayList = movie.readInformation();
                                 } catch (SQLException ex) {
                                     throw new RuntimeException(ex);
                                 } catch (ClassNotFoundException ex) {
@@ -1316,19 +1317,19 @@ public class CinemaApp {
                                 }
 
                                 boolean tag = true;
-                                for (int i = 0; i < moivesArrayList.size(); i++) {
-                                    if (moivesArrayList.get(i).name.equals(findMoiveName)) {
-                                        JOptionPane.showMessageDialog(findMoiveframe, moivesArrayList.get(i).toString());
+                                for (int i = 0; i < moviesArrayList.size(); i++) {
+                                    if (moviesArrayList.get(i).name.equals(findMovieName)) {
+                                        JOptionPane.showMessageDialog(findMovieframe, moviesArrayList.get(i).toString());
                                         tag = false;
-                                        findMoiveframe.dispose();
-                                        moivesManagementDialog.setVisible(true);
+                                        findMovieframe.dispose();
+                                        moviesManagementDialog.setVisible(true);
                                     }
 
                                 }
                                 if (tag){
-                                    JOptionPane.showMessageDialog(findMoiveframe, "暂无该电影信息!");
-                                    findMoiveframe.dispose();
-                                    moivesManagementDialog.setVisible(true);
+                                    JOptionPane.showMessageDialog(findMovieframe, "暂无该电影信息!");
+                                    findMovieframe.dispose();
+                                    moviesManagementDialog.setVisible(true);
                                 }
 
                             }
@@ -1338,8 +1339,8 @@ public class CinemaApp {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 // 返回上一步，关闭当前窗口
-                                findMoiveframe.dispose();
-                                moivesManagementDialog.setVisible(true);
+                                findMovieframe.dispose();
+                                moviesManagementDialog.setVisible(true);
                             }
                         });
 
@@ -1351,18 +1352,18 @@ public class CinemaApp {
                 backButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        moivesManagementDialog.dispose();
+                        moviesManagementDialog.dispose();
                         managerSystemframe.setVisible(true);
                     }
                 });
-                moivesManagementDialog.setVisible(true);
+                moviesManagementDialog.setVisible(true);
 
             }
         });
 
 
 
-        arrangeMoivesManagementButton.addActionListener(new ActionListener() {//排片管理
+        arrangeMoviesManagementButton.addActionListener(new ActionListener() {//排片管理
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -1381,6 +1382,52 @@ public class CinemaApp {
 
     }
 
+    public static void moviesList(JFrame frame){//电影清单
+        Movie movie = new Movie();
+        ArrayList<Movie> moviesList = new ArrayList<>();
+
+        JTextArea moviesListArea = new JTextArea(30, 50);
+        moviesListArea.setEditable(false); // 禁止编辑文本区域
+        moviesListArea.setLineWrap(true);
+        moviesListArea.setText("");
+
+        try {
+            moviesList= movie.readInformation();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        } catch (ClassNotFoundException ex) {
+            throw new RuntimeException(ex);
+        }
+        JDialog moviesListDialog = new JDialog(frame, "电影列表");
+        moviesListDialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        moviesListDialog.setLayout(new BorderLayout());
+        moviesListDialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                moviesListArea.setText("");
+                moviesListDialog.dispose();
+            }
+        });
+        moviesListArea.setText("");
+        // 将用户列表信息添加到文本区域
+        StringBuilder userListText = new StringBuilder();
+        for (Movie movie1 : moviesList) {
+            userListText.append("电影名: ").append(movie1.name).append("\n");
+            userListText.append("导演: ").append(movie1.director).append("\n");
+            userListText.append("主演: ").append(movie1.star).append("\n");
+            userListText.append("简介: ").append(movie1.synopsis).append("\n");
+            userListText.append("时长：").append(movie1.duration).append("min\n");
+            userListText.append("_________________________\n");
+        }
+        moviesListArea.setText(userListText.toString());
+        moviesListArea.paintImmediately(moviesListArea.getBounds());
+        JScrollPane scrollPane = new JScrollPane(moviesListArea);
+        moviesListDialog.add(scrollPane, BorderLayout.CENTER);
+
+        moviesListDialog.pack();
+        moviesListDialog.setVisible(true);
+    }
+
     public static void main(String[] args) {
 //        SwingUtilities.invokeLater(new Runnable() {
 //            @Override
@@ -1390,8 +1437,8 @@ public class CinemaApp {
 //        });
 
         CinemaApp cinemaApp = new CinemaApp();
-        //cinemaApp.cinemaApp();
         CinemaApp.managerSystem();
+
     }
 }
 
