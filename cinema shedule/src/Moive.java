@@ -92,7 +92,7 @@ public class Moive {
                 Moive moive = new Moive();
                 System.out.println();
                 //todo 完善updatemoives
-                String updateSQL = "UPDATE moives SET duration = ? WHERE name = ?";
+                String updateSQL = "UPDATE moives SET duration = ? ,WHERE name = ?";
                 PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);//执行sql语句
 
                 // 设置要更新的值和条件
