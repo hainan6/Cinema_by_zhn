@@ -2,7 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class CinemaApp {
     private JFrame logAndSignframe;
@@ -89,84 +92,107 @@ public class CinemaApp {
                 // 根据用户类型进行不同的处理
                 String selectedUserType = (String) userTypeComboBox.getSelectedItem();
 
-                if (selectedUserType.equals("用户")) {
-                    // 用户登录逻辑
-                    boolean flag = false;
-                    UserAuthentication userAuthentication = new UserAuthentication();
-                    User user = new User();
-                    user.username = username;
-                    user.password = password;
+                if(username.isEmpty() || password.isEmpty()){
+                    JOptionPane.showMessageDialog(logAndSignframe, "请输入账号和密码！");
+                }
+                else {
+                    if (selectedUserType.equals("用户")) {
+                        // 用户登录逻辑
+                        boolean flag = false;
+                        UserAuthentication userAuthentication = new UserAuthentication();
+                        User user = new User();
+                        user.username = username;
+                        user.password = password;
 
-                    try {
-                        flag = userAuthentication.authenticateUser(user);
-                        if(flag == true){
-                            showLoginSuccessPopup();
-                        }else{
-                            showLoginFailPopup();
+                        User userdemo = new User();
+
+                        System.out.println(user.username + "123");
+                        System.out.println(user.password + "456");
+                        try {
+                            //
+                            if (!userdemo.increaseLoginAttempts(user)) {
+                                JOptionPane.showMessageDialog(logAndSignframe, "暂无该用户信息！");
+                                logAndSignframe.dispose();
+                                cinemaApp();
+                            } else {
+                                if (userdemo.isLocked(user)) {
+                                    JOptionPane.showMessageDialog(logAndSignframe, "该账户已被锁定，请联系管理员");
+                                } else {
+                                    flag = userAuthentication.authenticateUser(user);
+                                    if (flag == true) {
+                                        showLoginSuccessPopup();
+                                        userdemo.initLoginAttempts(user);//初始化登录次数
+                                    } else {
+                                        JOptionPane.showMessageDialog(logAndSignframe, "密码错误，登陆失败");
+                                    }
+                                }
+
+                            }
+
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        } catch (ClassNotFoundException ex) {
+                            throw new RuntimeException(ex);
                         }
-                    } catch (SQLException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (ClassNotFoundException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                } else if (selectedUserType.equals("管理员")) {
-                    // todo 管理员登录逻辑
-                    boolean flag = false;
-                    UserAuthentication userAuthentication = new UserAuthentication();
-                    Admin admin= new Admin();
-                    admin.username = username;
-                    admin.password = password;
-                    try {
-                        flag = userAuthentication.authenticateUser(admin);
-                        if(flag == true){
-                            JOptionPane.showMessageDialog(logAndSignframe, "登陆成功");
-                            adminSystem();
-                            logAndSignframe.dispose();
-                        }else{
-                            showLoginFailPopup();
+                    } else if (selectedUserType.equals("管理员")) {
+                        // todo 管理员登录逻辑
+                        boolean flag = false;
+                        UserAuthentication userAuthentication = new UserAuthentication();
+                        Admin admin = new Admin();
+                        admin.username = username;
+                        admin.password = password;
+                        try {
+                            flag = userAuthentication.authenticateUser(admin);
+                            if (flag == true) {
+                                JOptionPane.showMessageDialog(logAndSignframe, "登陆成功");
+                                adminSystem();
+                                logAndSignframe.dispose();
+                            } else {
+                                showLoginFailPopup();
+                            }
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        } catch (ClassNotFoundException ex) {
+                            throw new RuntimeException(ex);
                         }
-                    } catch (SQLException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (ClassNotFoundException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                } else if (selectedUserType.equals("经理")) {
-                    // todo 经理登录逻辑
-                    boolean flag = false;
-                    UserAuthentication userAuthentication = new UserAuthentication();
-                    Manager manager= new Manager();
-                    manager.username = username;
-                    manager.password = password;
-                    try {
-                        flag = userAuthentication.authenticateUser(manager);
-                        if(flag == true){
-                            managerSystem();
-                        }else{
-                            showLoginFailPopup();
+                    } else if (selectedUserType.equals("经理")) {
+                        // todo 经理登录逻辑
+                        boolean flag = false;
+                        UserAuthentication userAuthentication = new UserAuthentication();
+                        Manager manager = new Manager();
+                        manager.username = username;
+                        manager.password = password;
+                        try {
+                            flag = userAuthentication.authenticateUser(manager);
+                            if (flag == true) {
+                                managerSystem();
+                            } else {
+                                showLoginFailPopup();
+                            }
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        } catch (ClassNotFoundException ex) {
+                            throw new RuntimeException(ex);
                         }
-                    } catch (SQLException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (ClassNotFoundException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                } else if (selectedUserType.equals("前台")) {
-                    // todo 前台登录逻辑
-                    boolean flag = false;
-                    UserAuthentication userAuthentication = new UserAuthentication();
-                    Reception reception= new Reception();
-                    reception.username = username;
-                    reception.password = password;
-                    try {
-                        flag = userAuthentication.authenticateUser(reception);
-                        if(flag == true){
-                            showLoginSuccessPopup();
-                        }else{
-                            showLoginFailPopup();
+                    } else if (selectedUserType.equals("前台")) {
+                        // todo 前台登录逻辑
+                        boolean flag = false;
+                        UserAuthentication userAuthentication = new UserAuthentication();
+                        Reception reception = new Reception();
+                        reception.username = username;
+                        reception.password = password;
+                        try {
+                            flag = userAuthentication.authenticateUser(reception);
+                            if (flag == true) {
+                                showLoginSuccessPopup();
+                            } else {
+                                showLoginFailPopup();
+                            }
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        } catch (ClassNotFoundException ex) {
+                            throw new RuntimeException(ex);
                         }
-                    } catch (SQLException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (ClassNotFoundException ex) {
-                        throw new RuntimeException(ex);
                     }
                 }
             }
@@ -182,75 +208,79 @@ public class CinemaApp {
                 String password = passwordField.getText();
 
                 String selectedUserType = (String) userTypeComboBox.getSelectedItem();
-
-                //todo 注册逻辑
-                if (selectedUserType.equals("用户")) {
-                    // todo 用户注册逻辑
-                    User user = new User();
-                    user.username = username;
-                    user.password = password;
-
-                    JFrame addInfoUserframe = new JFrame("用户信息输入");
-                    addInfoUserframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    addInfoUserframe.setSize(400, 200);
-                    addInfoUserframe.setLayout(new GridLayout(2, 1));
-
-                    JLabel phoneLabel = new JLabel("手机号码:");
-                    JLabel emailLabel = new JLabel("邮箱:");
-                    JTextField phoneField = new JTextField();
-                    JTextField emailField = new JTextField();
-                    JButton confirmButton = new JButton("确定");
-                    JButton backButton = new JButton("返回");
-
-                    JPanel inputPanel = new JPanel();
-                    inputPanel.setLayout(new GridLayout(2, 2));
-                    inputPanel.add(phoneLabel);
-                    inputPanel.add(phoneField);
-                    inputPanel.add(emailLabel);
-                    inputPanel.add(emailField);
-
-                    JPanel buttonPanel = new JPanel();
-                    buttonPanel.setLayout(new FlowLayout());
-                    buttonPanel.add(confirmButton);
-                    buttonPanel.add(backButton);
-
-                    addInfoUserframe.add(inputPanel);
-                    addInfoUserframe.add(buttonPanel);
-
-                    confirmButton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            user.phoneNumber = phoneField.getText();
-                            user.email = emailField.getText();
-//todo 注册
-                            // 在这里执行输入处理逻辑，可以使用phone和email的值
-                            try {
-                                if (userAuthentication.registerUser(user)) {
-                                    JOptionPane.showMessageDialog(addInfoUserframe, "注册成功！");
-                                    addInfoUserframe.dispose();
-                                }
-                                else{
-                                    JOptionPane.showMessageDialog(addInfoUserframe, "不符合要求注册要求：\n用户名不小于5个字符\n密码长度大于8个字符，必须包含大小写字母、数字和标点符号\n电话号码为中国大陆手机号\n邮箱要求输入域名");
-                                    addInfoUserframe.dispose();
-                                }
-                            } catch (ClassNotFoundException ex) {
-                                throw new RuntimeException(ex);
-                            }
-                        }
-                    });
-
-                    backButton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            // 返回上一步，关闭当前窗口
-                            addInfoUserframe.dispose();
-                        }
-                    });
-
-                    addInfoUserframe.setVisible(true);
+                if (username.isEmpty() || password.isEmpty()) {
+                    JOptionPane.showMessageDialog(logAndSignframe, "请输入账号和密码！");
                 } else
-                    //showRegisterNoPower();
-                JOptionPane.showMessageDialog(logAndSignframe,"您无此权限，请联系系统管理员!");
+                {
+                    //todo 注册逻辑
+                    if (selectedUserType.equals("用户")) {
+                        // todo 用户注册逻辑
+                        User user = new User();
+                        user.username = username;
+                        user.password = password;
+
+                        JFrame addInfoUserframe = new JFrame("用户信息输入");
+                        addInfoUserframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        addInfoUserframe.setSize(400, 200);
+                        addInfoUserframe.setLayout(new GridLayout(2, 1));
+
+                        JLabel phoneLabel = new JLabel("手机号码:");
+                        JLabel emailLabel = new JLabel("邮箱:");
+                        JTextField phoneField = new JTextField();
+                        JTextField emailField = new JTextField();
+                        JButton confirmButton = new JButton("确定");
+                        JButton backButton = new JButton("返回");
+
+                        JPanel inputPanel = new JPanel();
+                        inputPanel.setLayout(new GridLayout(2, 2));
+                        inputPanel.add(phoneLabel);
+                        inputPanel.add(phoneField);
+                        inputPanel.add(emailLabel);
+                        inputPanel.add(emailField);
+
+                        JPanel buttonPanel = new JPanel();
+                        buttonPanel.setLayout(new FlowLayout());
+                        buttonPanel.add(confirmButton);
+                        buttonPanel.add(backButton);
+
+                        addInfoUserframe.add(inputPanel);
+                        addInfoUserframe.add(buttonPanel);
+
+                        confirmButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                user.phoneNumber = phoneField.getText();
+                                user.email = emailField.getText();
+//todo 注册
+                                // 在这里执行输入处理逻辑，可以使用phone和email的值
+                                try {
+                                    if (userAuthentication.registerUser(user)) {
+                                        JOptionPane.showMessageDialog(addInfoUserframe, "注册成功！");
+                                        addInfoUserframe.dispose();
+                                    } else {
+                                        JOptionPane.showMessageDialog(addInfoUserframe, "不符合要求注册要求：\n用户名不小于5个字符\n密码长度大于8个字符，必须包含大小写字母、数字和标点符号\n电话号码为中国大陆手机号\n邮箱要求输入域名");
+                                        addInfoUserframe.dispose();
+                                    }
+                                } catch (ClassNotFoundException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            }
+                        });
+
+                        backButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                // 返回上一步，关闭当前窗口
+                                addInfoUserframe.dispose();
+                            }
+                        });
+
+                        addInfoUserframe.setVisible(true);
+                    } else {
+                        //showRegisterNoPower();
+                        JOptionPane.showMessageDialog(logAndSignframe, "您无此权限，请联系系统管理员!");
+                    }
+            }
             }
         });
 
@@ -328,6 +358,8 @@ public class CinemaApp {
     private void openSystem(User user){
         logAndSignframe.dispose();
     }
+
+
     private static void adminSystem() {
         JFrame adminSystemframe = new JFrame("用户管理系统");
         adminSystemframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -809,7 +841,7 @@ public class CinemaApp {
         adminSystemframe.setVisible(true);
     }
 
-    static void managerSystem(){
+    private static void managerSystem(){
         JFrame managerSystemframe = new JFrame("经理系统");
         managerSystemframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         managerSystemframe.setSize(400, 200);
@@ -827,7 +859,7 @@ public class CinemaApp {
             @Override
             public void actionPerformed(ActionEvent e) {
                 managerSystemframe.setVisible(false);
-                JDialog moviesManagementDialog = new JDialog(managerSystemframe, "用户管理");
+                JDialog moviesManagementDialog = new JDialog(managerSystemframe, "影片管理");
                 moviesManagementDialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 moviesManagementDialog.setSize(300, 300);
                 moviesManagementDialog.setLayout(new GridLayout(6, 1));
@@ -848,7 +880,7 @@ public class CinemaApp {
                 moviesManagementDialog.add(findMoviesButton);
                 moviesManagementDialog.add(backButton);
 
-                listMoviesButton.addActionListener(new ActionListener() {
+                listMoviesButton.addActionListener(new ActionListener() {//查看电影列表
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         Movie movie = new Movie();
@@ -903,11 +935,13 @@ public class CinemaApp {
                         moviesManagementDialog.setVisible(false);
                         JTextField movieNameField, directorField, actorsField, durationField;
                          JTextArea descriptionArea;
-                         JDialog movieInfoinput = new JDialog(managerSystemframe,"电影信息输入");
-                        movieInfoinput.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                         JDialog movieInfoinputDialog = new JDialog(managerSystemframe,"电影信息输入");
+                        movieInfoinputDialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-                        movieInfoinput.setSize(400, 300);
-                        movieInfoinput.setLocationRelativeTo(null);
+                        JDialog movieslistDialog=CinemaApp.moviesList(movieInfoinputDialog);
+
+                        movieInfoinputDialog.setSize(400, 300);
+                        movieInfoinputDialog.setLocationRelativeTo(null);
 
                         JPanel panel = new JPanel(new GridBagLayout());
                         GridBagConstraints constraints = new GridBagConstraints();
@@ -977,10 +1011,9 @@ public class CinemaApp {
                         constraints.gridy = 5;
                         panel.add(okButton, constraints);
 
-                        movieInfoinput.setVisible(true);
+                        movieInfoinputDialog.setVisible(true);
 
-                        // 添加确定按钮的点击事件监听器
-                        okButton.addActionListener(new ActionListener() {
+                        okButton.addActionListener(new ActionListener() {//确定添加电影信息
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 // 在这里获取输入的电影信息并进行处理
@@ -994,17 +1027,19 @@ public class CinemaApp {
 
                                 try {
                                     if(movie.isEmpty()){
-                                        JOptionPane.showMessageDialog(movieInfoinput, "请完整输入电影信息!");
+                                        JOptionPane.showMessageDialog(movieInfoinputDialog, "请完整输入电影信息!");
                                     }
                                     else{
                                         if (movie.insertMovies(movie)) {
-                                            JOptionPane.showMessageDialog(movieInfoinput, "添加影片成功!");
-                                            movieInfoinput.dispose();
+                                            JOptionPane.showMessageDialog(movieInfoinputDialog, "添加影片成功!");
+                                            movieInfoinputDialog.dispose();
+                                            movieslistDialog.dispose();
                                             moviesManagementDialog.setVisible(true);
                                         }
                                         else{
-                                            JOptionPane.showMessageDialog(movieInfoinput, "添加影片失败!");
-                                            movieInfoinput.dispose();
+                                            JOptionPane.showMessageDialog(movieInfoinputDialog, "添加影片失败!");
+                                            movieInfoinputDialog.dispose();
+                                            movieslistDialog.dispose();
                                             moviesManagementDialog.setVisible(true);
                                         }
                                     }
@@ -1018,17 +1053,17 @@ public class CinemaApp {
                             }
                         });
 
-                        // 添加取消按钮的点击事件监听器
-                        cancelButton.addActionListener(new ActionListener() {
+                        cancelButton.addActionListener(new ActionListener() {//返回上一步
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 // 返回上一步，关闭弹窗
-                                movieInfoinput.dispose();
+                                movieInfoinputDialog.dispose();
+                                movieslistDialog.dispose();
                                 moviesManagementDialog.setVisible(true);
                             }
                         });
 
-                        movieInfoinput.getContentPane().add(panel);
+                        movieInfoinputDialog.getContentPane().add(panel);
                     }
                 });
 
@@ -1036,13 +1071,16 @@ public class CinemaApp {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         // TODO: 2023-09-29  电影信息修改
-                        CinemaApp.moviesList(managerSystemframe);
+
+                        managerSystemframe.setVisible(false);
                         JTextField movieNameField, directorField, actorsField, durationField;
                         JTextArea descriptionArea;
-                        JDialog movieInfoUpdate = new JDialog(managerSystemframe,"电影信息更新");
-                        movieInfoUpdate.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                        movieInfoUpdate.setSize(400, 300);
-                        movieInfoUpdate.setLocationRelativeTo(null);
+                        JDialog movieInfoUpdatedialog = new JDialog(managerSystemframe,"电影信息更新");
+                        movieInfoUpdatedialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        movieInfoUpdatedialog.setSize(400, 300);
+                        movieInfoUpdatedialog.setLocationRelativeTo(null);
+
+                        JDialog movieslistframe=CinemaApp.moviesList(movieInfoUpdatedialog);
 
                         JPanel panel = new JPanel(new GridBagLayout());
                         GridBagConstraints constraints = new GridBagConstraints();
@@ -1112,9 +1150,9 @@ public class CinemaApp {
                         constraints.gridy = 5;
                         panel.add(okButton, constraints);
 
-                        movieInfoUpdate.setVisible(true);
+                        movieInfoUpdatedialog.setVisible(true);
 
-                        // 添加确定按钮的点击事件监听器
+
                         okButton.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
@@ -1129,17 +1167,19 @@ public class CinemaApp {
 
                                 try {
                                     if(movie.isEmpty()){
-                                        JOptionPane.showMessageDialog(movieInfoUpdate, "请完整输入电影信息!");
+                                        JOptionPane.showMessageDialog(movieInfoUpdatedialog, "请完整输入电影信息!");
                                     }
                                     else{
                                         if (movie.updatemovie(movie)) {
-                                            JOptionPane.showMessageDialog(movieInfoUpdate, "修改影片信息成功!");
-                                            movieInfoUpdate.dispose();
+                                            JOptionPane.showMessageDialog(movieInfoUpdatedialog, "修改影片信息成功!");
+                                            movieInfoUpdatedialog.dispose();
+                                            movieslistframe.dispose();
                                             moviesManagementDialog.setVisible(true);
                                         }
                                         else{
-                                            JOptionPane.showMessageDialog(movieInfoUpdate, "暂无该影片信息!");
-                                            movieInfoUpdate.dispose();
+                                            JOptionPane.showMessageDialog(movieInfoUpdatedialog, "暂无该影片信息!");
+                                            movieInfoUpdatedialog.dispose();
+                                            movieslistframe.dispose();
                                             moviesManagementDialog.setVisible(true);
                                         }
                                     }
@@ -1153,16 +1193,17 @@ public class CinemaApp {
                             }
                         });
 
-                        // 添加取消按钮的点击事件监听器
                         cancelButton.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 // 返回上一步，关闭弹窗
-                                movieInfoUpdate.dispose();
+                                movieInfoUpdatedialog.dispose();
+                                movieslistframe.dispose();
+                                moviesManagementDialog.setVisible(true);
                             }
                         });
 
-                        movieInfoUpdate.getContentPane().add(panel);
+                        movieInfoUpdatedialog.getContentPane().add(panel);
                         //todo 修改信息
                     }
 
@@ -1277,7 +1318,7 @@ public class CinemaApp {
                         findMovieframe.setSize(400, 150);
                         findMovieframe.setLayout(new GridLayout(2, 1));
 
-                        JLabel movieNameLabel = new JLabel("请输入用户名:");
+                        JLabel movieNameLabel = new JLabel("请输入电影名:");
                         JTextField movieNameField = new JTextField(20); // 增加文本框大小
 
                         JButton confirmButton = new JButton("确认");
@@ -1366,7 +1407,195 @@ public class CinemaApp {
         arrangeMoviesManagementButton.addActionListener(new ActionListener() {//排片管理
             @Override
             public void actionPerformed(ActionEvent e) {
+                //todo 排片管理
+                managerSystemframe.setVisible(false);
+                JDialog movieScheduleManagementDialog = new JDialog(managerSystemframe, "排片管理");
+                movieScheduleManagementDialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                movieScheduleManagementDialog.setSize(300, 300);
+                movieScheduleManagementDialog.setLayout(new GridLayout(5, 1));
 
+                JButton addScheduleButton = new JButton("增加场次");
+                JButton updateScheduleButton = new JButton("修改场次");
+                JButton deleteScheduleButton = new JButton("删除场次");
+                JButton listScheduleButton = new JButton("列出所有场次信息");
+                JButton backButton = new JButton("返回上一步");
+                
+                movieScheduleManagementDialog.add(addScheduleButton);
+                movieScheduleManagementDialog.add(updateScheduleButton);
+                movieScheduleManagementDialog.add(deleteScheduleButton);
+                movieScheduleManagementDialog.add(listScheduleButton);
+                movieScheduleManagementDialog.add(backButton);
+                
+                addScheduleButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        //todo 排片
+                        movieScheduleManagementDialog.setVisible(false);
+
+                        Calendar calendar = Calendar.getInstance();
+                        Date currentDate = calendar.getTime();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("MM月dd日");
+                        String[] date = new String[7];
+                        date[0]=dateFormat.format(currentDate);
+                        for (int i = 1; i < 7; i++) {
+                            // 增加一天
+                            calendar.add(Calendar.DAY_OF_MONTH, 1);
+                            Date nextDate = calendar.getTime();
+                            date[i] = dateFormat.format(nextDate);
+                        }
+
+                        JDialog arrangeMovieJdialog = new JDialog(movieScheduleManagementDialog,"电影场次安排");
+                        arrangeMovieJdialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                        arrangeMovieJdialog.setSize(400, 350);
+                        arrangeMovieJdialog.getContentPane().setBackground(Color.LIGHT_GRAY);
+
+                        JPanel panel = new JPanel(new GridLayout(5, 2, 10, 10));
+
+                        JLabel movieLabel = new JLabel("电影名称:");
+                        JTextField movieField = new JTextField();
+                        JLabel hallLabel = new JLabel("放映厅:");
+                        JComboBox<String> hallComboBox = new JComboBox<>(new String[]{"1号厅", "2号厅", "3号厅"});
+                        JLabel dayLabel = new JLabel("选择日期:");
+                        JComboBox<String> dayComboBox = new JComboBox<>(new String[]{date[0], date[1], date[2], date[3], date[4], date[5], date[6]});
+                        JLabel timeLabel = new JLabel("选择时间:");
+                        JComboBox<String> timeComboBox = new JComboBox<>(new String[]{"8:30", "11:30", "14:00", "19:00", "22:00"});
+                        JLabel priceLabel = new JLabel("价格:");
+                        JTextField priceField = new JTextField();
+
+                        JPanel buttonPanel = new JPanel();
+                        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+                        JButton confirmButton = new JButton("确认");
+                        JButton cancelButton = new JButton("取消");
+
+                        confirmButton.setPreferredSize(new Dimension(100, 30));
+                        cancelButton.setPreferredSize(new Dimension(100, 30));
+
+                        buttonPanel.add(confirmButton);
+                        buttonPanel.add(cancelButton);
+
+                        panel.add(movieLabel);
+                        panel.add(movieField);
+                        panel.add(hallLabel);
+                        panel.add(hallComboBox);
+                        panel.add(dayLabel);
+                        panel.add(dayComboBox);
+                        panel.add(timeLabel);
+                        panel.add(timeComboBox);
+                        panel.add(priceLabel);
+                        panel.add(priceField);
+
+                        arrangeMovieJdialog.add(panel, BorderLayout.CENTER);
+                        arrangeMovieJdialog.add(buttonPanel, BorderLayout.SOUTH);
+
+                        confirmButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                MoviesShedule moviesShedule = new MoviesShedule();
+
+                                String movieName = movieField.getText();
+                                String hall = (String) hallComboBox.getSelectedItem();
+                                String showtime = (String) dayComboBox.getSelectedItem()+(String) timeComboBox.getSelectedItem();
+                                String price = priceField.getText();
+
+                                // TODO: 2023-10-02  完善排片
+
+
+                                JOptionPane.showMessageDialog(arrangeMovieJdialog, "已确认电影：" + movieName +
+                                        " 在放映厅：" + hall + " 日期：" + showtime + " 价格：" + price);
+                            }
+                        });
+
+                        cancelButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                arrangeMovieJdialog.dispose();
+                                movieScheduleManagementDialog.setVisible(true);
+                            }
+                        });
+
+                        arrangeMovieJdialog.setVisible(true);
+                        //todo 排片
+                    }
+                });
+                
+                updateScheduleButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        //todo 修改排片
+                        //todo 修改排片
+                    }
+                });
+                
+                deleteScheduleButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        //todo 删除排片
+                        //todo 删除排片
+                    }
+                });
+                
+                listScheduleButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // TODO: 2023-10-02 列出排片
+                        MoviesShedule moviesSheduleDemo = new MoviesShedule();
+                        ArrayList<MoviesShedule> moviesShedulesList = new ArrayList<>();
+
+                        JTextArea moviesListArea = new JTextArea(30, 50);
+                        moviesListArea.setEditable(false); // 禁止编辑文本区域
+                        moviesListArea.setLineWrap(true);
+                        moviesListArea.setText("");
+
+                        try {
+                            moviesShedulesList=moviesSheduleDemo.readmoviesSheduleList();
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        } catch (ClassNotFoundException ex) {
+                            throw new RuntimeException(ex);
+                        }
+
+                        JDialog moviesScheduleListDialog = new JDialog(managerSystemframe, "排片列表");
+                        moviesScheduleListDialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        moviesScheduleListDialog.setLayout(new BorderLayout());
+                        moviesScheduleListDialog.addWindowListener(new WindowAdapter() {
+                            @Override
+                            public void windowClosing(WindowEvent e) {
+                                moviesListArea.setText("");
+                                moviesScheduleListDialog.dispose();
+                            }
+                        });
+                        moviesListArea.setText("");
+                        // 将用户列表信息添加到文本区域
+                        StringBuilder userListText = new StringBuilder();
+                        for (MoviesShedule moviesShedule : moviesShedulesList) {
+                            userListText.append("电影名: ").append(moviesShedule.moiveName).append("\n");
+                            userListText.append("厅号: ").append(moviesShedule.hallNum).append("\n");
+                            userListText.append("时间: ").append(moviesShedule.showtime).append("\n");
+                            userListText.append("价格: ").append(moviesShedule.price).append("\n");
+                            userListText.append("_________________________\n");
+                        }
+                        moviesListArea.setText(userListText.toString());
+                        moviesListArea.paintImmediately(moviesListArea.getBounds());
+                        JScrollPane scrollPane = new JScrollPane(moviesListArea);
+                        moviesScheduleListDialog.add(scrollPane, BorderLayout.CENTER);
+
+                        moviesScheduleListDialog.pack();
+                        moviesScheduleListDialog.setVisible(true);
+                        // TODO: 2023-10-02 列出排片 
+                    }
+                });
+                backButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        movieScheduleManagementDialog.dispose();
+                        managerSystemframe.setVisible(true);
+                    }
+                });
+
+                movieScheduleManagementDialog.setVisible(true);
+
+                //todo 排片管理
             }
         });
 
@@ -1382,7 +1611,16 @@ public class CinemaApp {
 
     }
 
-    public static void moviesList(JFrame frame){//电影清单
+    private static void receptionSystem(){
+
+    }
+
+    private static void userSystem(){
+
+    }
+
+
+    public static JDialog moviesList(JDialog jDialog){//电影清单
         Movie movie = new Movie();
         ArrayList<Movie> moviesList = new ArrayList<>();
 
@@ -1398,7 +1636,7 @@ public class CinemaApp {
         } catch (ClassNotFoundException ex) {
             throw new RuntimeException(ex);
         }
-        JDialog moviesListDialog = new JDialog(frame, "电影列表");
+        JDialog moviesListDialog = new JDialog(jDialog, "电影列表");
         moviesListDialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         moviesListDialog.setLayout(new BorderLayout());
         moviesListDialog.addWindowListener(new WindowAdapter() {
@@ -1426,6 +1664,7 @@ public class CinemaApp {
 
         moviesListDialog.pack();
         moviesListDialog.setVisible(true);
+        return moviesListDialog;
     }
 
     public static void main(String[] args) {

@@ -15,7 +15,7 @@ public class MoviesShedule {
 
     ArrayList<MoviesShedule> moviesSheduleArrayList = new ArrayList<>();
 
-    boolean setMoivesShedule(MoviesShedule moviesShedule) throws SQLException, ClassNotFoundException {
+    boolean setMoiveShedule(MoviesShedule moviesShedule) throws SQLException, ClassNotFoundException {
         try (Connection connection = linkMySql.linkMysql()) {
             // 构建插入SQL语句
             String insertSQL = "INSERT INTO movieSchedule (movieTitle, hallNumber, showtime, price) VALUES (?, ?, ?, ?)";
@@ -37,6 +37,41 @@ public class MoviesShedule {
         return false;
     }
 
+    boolean deleteMovieShedule(MoviesShedule moviesShedule){
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            // 创建数据库连接
+            connection = linkMySql.linkMysql();
+            String deleteSQL = "DELETE FROM movieschedule WHERE movieTitle = ?";
+            preparedStatement = connection.prepareStatement(deleteSQL);
+            preparedStatement.setString(1, moviesShedule.moiveName);
+            // 执行SQL语句
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    boolean updateMovieShedule(MoviesShedule moviesShedule) throws SQLException, ClassNotFoundException {
+        boolean tag1 = deleteMovieShedule(moviesShedule);
+
+        boolean tag2 = setMoiveShedule(moviesShedule);
+
+        if(tag1 == false){
+            return false;
+        }
+        if (tag1 && tag2){
+            return true;
+        }else return false;
+    }
     public MoviesShedule(){}
     public MoviesShedule(String name,int price , int hallNum ){
         this.moiveName=name;
@@ -129,14 +164,15 @@ public class MoviesShedule {
 
     }
 
+
+
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         MoviesShedule moviesShedule = new MoviesShedule("dfsf",51,0);
-        moviesShedule.setMoivesShedule(moviesShedule);
-//        ArrayList<MoviesShedule> moviesShedules = moviesShedule.readmoviesSheduleList();
-//        System.out.println(moviesShedules.size());
-//        for (int i = 0; i < moviesShedules.size(); i++) {
-//            System.out.println(moviesShedules.get(i).toString());
-//        }
+        ArrayList<MoviesShedule> moviesShedules = moviesShedule.readmoviesSheduleList();
+        System.out.println(moviesShedules.size());
+        for (int i = 0; i < moviesShedules.size(); i++) {
+            System.out.println(moviesShedules.get(i).toString());
+        }
     }
 
 }

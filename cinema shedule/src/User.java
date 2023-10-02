@@ -14,7 +14,11 @@ public class User {
      String totalAmountSpent;
      String userLevel;
      String UserRegistrationTime;
-     public static Link_MySql linkMySql = new Link_MySql();
+     int loginAttempts;
+     boolean is_locked;
+
+
+     static Link_MySql linkMySql = new Link_MySql();
 
      public static Scanner scanner = new Scanner(System.in);
 
@@ -61,7 +65,7 @@ public class User {
         Connection connection = linkMySql.linkMysql();
         if(connection != null){
             try {
-                    String updateSQL = "UPDATE moives SET password = ? WHERE username = ?";
+                    String updateSQL = "UPDATE users SET password = ? WHERE username = ?";
                     PreparedStatement preparedStatement1 = connection.prepareStatement(updateSQL);//执行sql语句
 
                     // 设置要更新的值和条件
@@ -90,11 +94,126 @@ public class User {
             return false;
     }
 
+    boolean isLocked(User user) throws SQLException, ClassNotFoundException {
+        Connection connection = linkMySql.linkMysql();
+
+        int loginAttempts = 0;
+
+        boolean tag = false;//标记是否需要被锁定
+
+        if(connection != null){
+            try {
+                String selectSQL = "SELECT * FROM users";
+                // 创建PreparedStatement对象，用于执行SQL查询
+                PreparedStatement preparedStatementforFind = connection.prepareStatement(selectSQL);
+                // 执行查询操作
+                ResultSet resultSet = preparedStatementforFind.executeQuery();
+                // 遍历结果集并输出数据
+                while (resultSet.next()) {
+                    if (resultSet.getString("username").equals(user.username)){
+                        if (resultSet.getInt("loginAttempts") >= 5){
+                            tag = true;
+                        }
+                        break;
+                    }
+                }
+                // 关闭连接
+
+
+                if (tag){
+                    String updateSQL = "UPDATE users SET is_locked = ? WHERE username = ?";
+                    PreparedStatement preparedStatementforIncrease = connection.prepareStatement(updateSQL);//执行sql语句
+
+                    // 设置要更新的值和条件
+                    preparedStatementforIncrease.setBoolean(1, true);
+
+                    preparedStatementforIncrease.setString(2, user.username); // 根据ID更新数据
+
+                    // 执行更新操作
+                    int rowsUpdated = preparedStatementforIncrease.executeUpdate();
+
+                    connection.close();//关闭连接
+                    resultSet.close();
+                    preparedStatementforFind.close();
+
+                    return rowsUpdated>0;
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+ boolean increaseLoginAttempts(User user) throws SQLException, ClassNotFoundException {//登录次数
+        Connection connection = linkMySql.linkMysql();
+        int loginAttempts = 0;
+
+            try {
+
+                String selectSQL = "SELECT * FROM users";
+                // 创建PreparedStatement对象，用于执行SQL查询
+                PreparedStatement preparedStatementforFind = connection.prepareStatement(selectSQL);
+                // 执行查询操作
+                ResultSet resultSet = preparedStatementforFind.executeQuery();
+                // 遍历结果集并输出数据
+                while (resultSet.next()) {
+                   if (resultSet.getString("username").equals(user.username)){
+                       loginAttempts=resultSet.getInt("loginAttempts");
+                       break;
+                   }
+                }
+
+                // 关闭连接
+                resultSet.close();
+                preparedStatementforFind.close();
+
+                String updateSQL = "UPDATE users SET loginAttempts = ? WHERE username = ?";
+                PreparedStatement preparedStatementforIncrease = connection.prepareStatement(updateSQL);//执行sql语句
+
+                // 设置要更新的值和条件
+                preparedStatementforIncrease.setInt(1, ++loginAttempts);
+
+                preparedStatementforIncrease.setString(2, user.username); // 根据ID更新数据
+
+                // 执行更新操作
+                int rowsUpdated = preparedStatementforIncrease.executeUpdate();
+                connection.close();//关闭连接
+                return rowsUpdated>0;
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                return false;
+            }
+ }
+
+    boolean initLoginAttempts(User user) throws SQLException, ClassNotFoundException {//初始化登录次数
+        Connection connection = linkMySql.linkMysql();
+        try {
+            String updateSQL = "UPDATE users SET loginAttempts = ? WHERE username = ?";
+            PreparedStatement preparedStatementforIncrease = connection.prepareStatement(updateSQL);//执行sql语句
+            // 设置要更新的值和条件
+            preparedStatementforIncrease.setInt(1, 0);//初始化登录次数
+            preparedStatementforIncrease.setString(2, user.username); // 根据ID更新数据
+            // 执行更新操作
+            int rowsUpdated = preparedStatementforIncrease.executeUpdate();
+            connection.close();//关闭连接
+            return rowsUpdated>0;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         User user = new User();
+        user.username="sss";
+        user.loginAttempts=5;
 
-        user.updatePassword();
+        user.isLocked(user);
     }
 
 }

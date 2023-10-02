@@ -4,4 +4,6 @@ public class Reception {
     String username;
     String password;
 
+
+
 }

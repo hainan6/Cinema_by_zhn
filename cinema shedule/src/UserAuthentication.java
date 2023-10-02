@@ -95,13 +95,19 @@ public class UserAuthentication {
 //
 
     public  boolean authenticateUser(User user) throws SQLException, ClassNotFoundException {
-            Connection connection = linkMySql.linkMysql();
+        Connection connection = linkMySql.linkMysql();
+
+//        if(user.username.equals(null) || user.password.equals(null)){
+//            return false;
+//        }
+
             String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            user.password=hash.md5(user.password);
+
+            user.password=hash.md5(user.password);//MD5加密密码
             preparedStatement.setString(1, user.username);
             preparedStatement.setString(2, user.password);
-        System.out.println(user.password);
+
             ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.next();
     }
