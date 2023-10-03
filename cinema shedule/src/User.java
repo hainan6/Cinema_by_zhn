@@ -58,10 +58,7 @@ public class User {
 
     }
 
-    boolean updatePassword() throws SQLException, ClassNotFoundException {
-
-        UserAuthentication userAuthentication = new UserAuthentication();
-        userAuthentication.authenticateUser(new User());
+    boolean updatePassword(User user) throws SQLException, ClassNotFoundException {
         Connection connection = linkMySql.linkMysql();
         if(connection != null){
             try {
@@ -69,26 +66,21 @@ public class User {
                     PreparedStatement preparedStatement1 = connection.prepareStatement(updateSQL);//执行sql语句
 
                     // 设置要更新的值和条件
-                    preparedStatement1.setInt(1, 50);
+                Hash hash = new Hash();
+                user.password=hash.md5(user.password);
+                    preparedStatement1.setString(1, user.password);
 
-                    preparedStatement1.setString(2, "1"); // 根据ID更新数据
+                    preparedStatement1.setString(2, user.username); // 根据ID更新数据
 
                     // 执行更新操作
                     int rowsUpdated = preparedStatement1.executeUpdate();
-
-                    if (rowsUpdated > 0) {
-                        System.out.println("更新成功，影响行数: " + rowsUpdated);
-                    } else {
-                        System.out.println("未更新任何行");
-                    }
-
                     connection.close();//关闭连接
+                    return rowsUpdated>0;
             }
             catch (Exception e){
                 e.printStackTrace();
+                return false;
             }
-
-            return true;
         }
         else
             return false;

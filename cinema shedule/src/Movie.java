@@ -181,32 +181,26 @@ String sb(){
 
 
 
-    public static char [][] readScreeningseat() throws SQLException, ClassNotFoundException {
+    public static String[][] readScreeningseat() throws SQLException, ClassNotFoundException {
         Connection connection = linkMySql.linkMysql();
-        char [][] screenInfo = new char[5][12];
+        String [][] screenInfo = new String[7][13];
         if(connection != null){
             String selectSQL = "SELECT * FROM screeningroom1";
             // 创建PreparedStatement对象，用于执行SQL查询
             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
-
             // 执行查询操作
             ResultSet resultSet = preparedStatement.executeQuery();
-
             // 遍历结果集并输出数据
-
-                for (int i = 0; i < 5 &&resultSet.next(); i++) {
+                for (int i = 0; i < 7 &&resultSet.next(); i++) {
                     for (int j = 1; j <= 12; j++) {
                         if(resultSet.getInt("a"+j) == 0){
-                            screenInfo[i][j-1]='空';
+                            screenInfo[i][j]="空";
                         }
                         else {
-                            screenInfo[i][j-1]='满';
+                            screenInfo[i][j]="满";
                         }
-
                     }
-
             }
-
             // 关闭连接
             resultSet.close();
             preparedStatement.close();
@@ -220,107 +214,107 @@ String sb(){
         }
     }
 
-    public boolean selectSeats() throws SQLException, ClassNotFoundException {
+//    public boolean selectSeats() throws SQLException, ClassNotFoundException {
+//
+//        String [][]seatinfor  = new String[5][12];
+//        seatinfor = readScreeningseat();
+//
+//        //printScreenSeat(seatinfor);
+//
+//        Scanner read = new Scanner(System.in);
+//        System.out.print("请输入行数:");
+//          int row = read.nextInt();//b
+//        System.out.print("请输入列数:");
+//          int col = read.nextInt();//a
+//        Connection connection = linkMySql.linkMysql();
+//        try {//判断选择座位是否规范
+//            if (!(row > 0 && row <= 5) && (col > 0 && col <= 12)) {
+//                throw new RuntimeException();
+//            }
+//        }
+//            catch(Exception e){
+//                System.out.println("输入不符合规范，座位不存在!!!请重新输入");
+//                System.out.print("请输入行数:");
+//                row = read.nextInt();//b
+//                System.out.print("请输入列数:");
+//                col = read.nextInt();//a
+//            }
+//
+//        try{
+//            if(seatinfor[row-1][col-1] == '满'){
+//                throw new RuntimeException();
+//            }
+//        }
+//        catch (Exception e){
+//            System.out.println("座位已被其他人选择!!!请重新输入");
+//            System.out.print("请输入行数:");
+//            row = read.nextInt();//b
+//            System.out.print("请输入列数:");
+//            col = read.nextInt();//a
+//        }
+//
+//        if(((row>0&&row<=5) && (col>0&&col<=12)) && (seatinfor[row-1][col-1]!= '满') ){
+//            if(connection != null){
+//                try{
+//
+//                    String updateSQL = "UPDATE screeningroom1 SET a"+col+"= ? WHERE rol = ?";
+//                    //String updateSQL = "UPDATE movies SET duration = ? WHERE name = ?";
+//
+//                    PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);//执行sql语句
+//
+//                    // 设置要更新的值和条件
+//                    preparedStatement.setInt(1, 1);
+//
+//                    preparedStatement.setString(2, "b"+row); // 根据ID更新数据
+//
+//                    // 执行更新操作
+//                    int rowsUpdated = preparedStatement.executeUpdate();
+//
+//                    if (rowsUpdated > 0) {
+//                        System.out.println("更新成功，影响行数: " + rowsUpdated);
+//                    } else {
+//                        System.out.println("未更新任何行");
+//                    }
+//
+//                    printScreenSeat(readScreeningseat());
+//                    connection.close();//关闭连接
+//
+//                }
+//                catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//                return true;
+//            }
+//            else
+//                return false;
+//        }
+//
+//        return false;
+//    }
 
-        char[][]  seatinfor  = new char[5][12];
-        seatinfor = readScreeningseat();
-
-        printScreenSeat(seatinfor);
-
-        Scanner read = new Scanner(System.in);
-        System.out.print("请输入行数:");
-          int row = read.nextInt();//b
-        System.out.print("请输入列数:");
-          int col = read.nextInt();//a
-        Connection connection = linkMySql.linkMysql();
-        try {//判断选择座位是否规范
-            if (!(row > 0 && row <= 5) && (col > 0 && col <= 12)) {
-                throw new RuntimeException();
-            }
-        }
-            catch(Exception e){
-                System.out.println("输入不符合规范，座位不存在!!!请重新输入");
-                System.out.print("请输入行数:");
-                row = read.nextInt();//b
-                System.out.print("请输入列数:");
-                col = read.nextInt();//a
-            }
-
-        try{
-            if(seatinfor[row-1][col-1] == '满'){
-                throw new RuntimeException();
-            }
-        }
-        catch (Exception e){
-            System.out.println("座位已被其他人选择!!!请重新输入");
-            System.out.print("请输入行数:");
-            row = read.nextInt();//b
-            System.out.print("请输入列数:");
-            col = read.nextInt();//a
-        }
-
-        if(((row>0&&row<=5) && (col>0&&col<=12)) && (seatinfor[row-1][col-1]!= '满') ){
-            if(connection != null){
-                try{
-
-                    String updateSQL = "UPDATE screeningroom1 SET a"+col+"= ? WHERE rol = ?";
-                    //String updateSQL = "UPDATE movies SET duration = ? WHERE name = ?";
-
-                    PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);//执行sql语句
-
-                    // 设置要更新的值和条件
-                    preparedStatement.setInt(1, 1);
-
-                    preparedStatement.setString(2, "b"+row); // 根据ID更新数据
-
-                    // 执行更新操作
-                    int rowsUpdated = preparedStatement.executeUpdate();
-
-                    if (rowsUpdated > 0) {
-                        System.out.println("更新成功，影响行数: " + rowsUpdated);
-                    } else {
-                        System.out.println("未更新任何行");
-                    }
-
-                    printScreenSeat(readScreeningseat());
-                    connection.close();//关闭连接
-
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-                return true;
-            }
-            else
-                return false;
-        }
-
-        return false;
-    }
-
-    void printScreenSeat(char [][] s) {
-
-        System.out.print("\t\t\t\t\t放映厅\n\n");
-        //System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++");
-        //System.out.print("|   1|\t2 |\t3|\t4\t5\t6\t7\t8\t9\t10\t11\t12\n");
-        System.out.print("   1\t2 \t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\n");
-        for (int i = 0; i < 5; i++) {
-            //System.out.print("|");
-            //System.out.print(i+1+" |");
-            System.out.print(i + 1 + " ");
-            for (int j = 0; j < 12; j++) {
-
-                if (j == 11) {
-                    System.out.print(s[i][j]);
-                } else {
-                    //System.out.print(s[i][j]+"|\t");
-                    System.out.print(s[i][j] + "\t");
-                }
-            }
-            System.out.println();
-            //System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++");
-        }
-    }
+//    void printScreenSeat(char [][] s) {
+//
+//        System.out.print("\t\t\t\t\t放映厅\n\n");
+//        //System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++");
+//        //System.out.print("|   1|\t2 |\t3|\t4\t5\t6\t7\t8\t9\t10\t11\t12\n");
+//        System.out.print("   1\t2 \t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\n");
+//        for (int i = 0; i < 5; i++) {
+//            //System.out.print("|");
+//            //System.out.print(i+1+" |");
+//            System.out.print(i + 1 + " ");
+//            for (int j = 0; j < 12; j++) {
+//
+//                if (j == 11) {
+//                    System.out.print(s[i][j]);
+//                } else {
+//                    //System.out.print(s[i][j]+"|\t");
+//                    System.out.print(s[i][j] + "\t");
+//                }
+//            }
+//            System.out.println();
+//            //System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++");
+//        }
+//    }
 
     boolean isEmpty(){
         if(this.name.isEmpty()||this.director.isEmpty()||this.star.isEmpty()||this.synopsis.isEmpty()|| this.duration.isEmpty()){
@@ -361,7 +355,13 @@ String sb(){
     }
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        Movie movie = new Movie("1","2","3","4","5");
-        movie.selectSeats();
+        String[][] s = readScreeningseat();
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 13; j++) {
+                System.out.print(s[i][j]+" ");
+            }
+            System.out.println();
         }
+    }
+
 }

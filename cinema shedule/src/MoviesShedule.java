@@ -7,15 +7,16 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MoviesShedule {
+    int id;
     String moiveName;
-    public int price;
-    int hallNum;
+    String price;
+    String hallNum;
     String showtime;
     static Link_MySql linkMySql = new Link_MySql();
 
     ArrayList<MoviesShedule> moviesSheduleArrayList = new ArrayList<>();
 
-    boolean setMoiveShedule(MoviesShedule moviesShedule) throws SQLException, ClassNotFoundException {
+    boolean insertMovieShedule(MoviesShedule moviesShedule) throws SQLException, ClassNotFoundException {
         try (Connection connection = linkMySql.linkMysql()) {
             // 构建插入SQL语句
             String insertSQL = "INSERT INTO movieSchedule (movieTitle, hallNumber, showtime, price) VALUES (?, ?, ?, ?)";
@@ -23,9 +24,9 @@ public class MoviesShedule {
             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
             // 设置参数
             preparedStatement.setString(1, moviesShedule.moiveName);
-            preparedStatement.setInt(2, moviesShedule.hallNum);
+            preparedStatement.setString(2, moviesShedule.hallNum);
             preparedStatement.setString(3, moviesShedule.showtime);
-            preparedStatement.setDouble(4, moviesShedule.price);
+            preparedStatement.setString(4, moviesShedule.price);
 
             // 执行插入操作
             int rowsInserted = preparedStatement.executeUpdate();
@@ -37,16 +38,16 @@ public class MoviesShedule {
         return false;
     }
 
-    boolean deleteMovieShedule(MoviesShedule moviesShedule){
+    boolean deleteMovieScheduleByid(int id){
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             // 创建数据库连接
             connection = linkMySql.linkMysql();
-            String deleteSQL = "DELETE FROM movieschedule WHERE movieTitle = ?";
+            String deleteSQL = "DELETE FROM movieschedule WHERE id = ?";
             preparedStatement = connection.prepareStatement(deleteSQL);
-            preparedStatement.setString(1, moviesShedule.moiveName);
+            preparedStatement.setString(1, moiveName);
             // 执行SQL语句
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
@@ -60,20 +61,21 @@ public class MoviesShedule {
         }
     }
 
-    boolean updateMovieShedule(MoviesShedule moviesShedule) throws SQLException, ClassNotFoundException {
-        boolean tag1 = deleteMovieShedule(moviesShedule);
 
-        boolean tag2 = setMoiveShedule(moviesShedule);
 
-        if(tag1 == false){
-            return false;
-        }
-        if (tag1 && tag2){
-            return true;
-        }else return false;
-    }
+//    boolean updateMovieShedule(MoviesShedule moviesShedule) throws SQLException, ClassNotFoundException {
+//        boolean tag1 = deleteMovieSheduleByid(moviesShedule.id);
+//        boolean tag2 = insertMovieShedule(moviesShedule);
+//
+//        if(tag1 == false){
+//            return false;
+//        }
+//        if (tag1 && tag2){
+//            return true;
+//        }else return false;
+//    }
     public MoviesShedule(){}
-    public MoviesShedule(String name,int price , int hallNum ){
+    public MoviesShedule(String name,String price ,String hallNum ){
         this.moiveName=name;
         this.price=price;
         this.hallNum=hallNum;
@@ -89,7 +91,7 @@ public class MoviesShedule {
 
     @Override
     public String toString() {
-        return "电影名:" + moiveName  +
+        return "ID:"+id+"电影名:" + moiveName +
                 "放映厅号:" + hallNum +
                 "放映时间:" + showtime +
                 "票价:" + price ;
@@ -108,9 +110,10 @@ public class MoviesShedule {
             // 遍历结果集并输出数据
             while (resultSet.next()) {
                 MoviesShedule moviesShedule = new MoviesShedule();
+                moviesShedule.id = resultSet.getInt("id");
                 moviesShedule.moiveName = resultSet.getString("movieTitle");
-                moviesShedule.hallNum = resultSet.getInt("hallNumber");
-                moviesShedule.price = resultSet.getInt("price");
+                moviesShedule.hallNum = resultSet.getString("hallNumber");
+                moviesShedule.price = resultSet.getString("price");
                 moviesShedule.showtime= resultSet.getString("showtime");
                 moviesSheduleArrayList.add(moviesShedule);
             }
@@ -126,50 +129,53 @@ public class MoviesShedule {
         }
     }
 
-    boolean  updatemoiveschedule() throws SQLException, ClassNotFoundException {
+    boolean updateMovieSchedule(MoviesShedule moviesShedule) throws SQLException, ClassNotFoundException {
         Connection connection = linkMySql.linkMysql();
-
         if(connection != null){
             try{
-                Movie movie = new Movie();
-                System.out.println();
-                //todo 完善updatemoives
-                String updateSQL = "UPDATE movieschedule SET showtime = ? WHERE movieTitle = ?";
+                String updateSQL = "UPDATE movieschedule SET movieTitle = ?,hallNumber=?,showtime=?,price=? WHERE id = ?";
                 PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);//执行sql语句
-
                 // 设置要更新的值和条件
-                preparedStatement.setInt(1, 50);
-
-                preparedStatement.setString(2, "1"); // 根据ID更新数据
-
+                preparedStatement.setString(1, moviesShedule.moiveName);
+                preparedStatement.setString(2, moviesShedule.hallNum); // 根据ID更新数据
+                preparedStatement.setString(3, moviesShedule.showtime);
+                preparedStatement.setString(4, moviesShedule.price);
+                preparedStatement.setInt(5, moviesShedule.id);
                 // 执行更新操作
                 int rowsUpdated = preparedStatement.executeUpdate();
-
-                if (rowsUpdated > 0) {
-                    System.out.println("更新成功，影响行数: " + rowsUpdated);
-                } else {
-                    System.out.println("未更新任何行");
-                }
-
                 connection.close();//关闭连接
-
+                if (rowsUpdated > 0) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
             catch (Exception e){
                 e.printStackTrace();
+                return false;
             }
-            return true;
+
         }
         else
             return false;
 
     }
 
+    boolean isEmpty() {
+        boolean result;
+        if (this.moiveName.isEmpty() || this.hallNum.isEmpty() || this.showtime.isEmpty() || this.price.isEmpty()) {
+            result = true;
+        } else {
+            result = false;
+        }
+        return result;
+    }
+
 
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        MoviesShedule moviesShedule = new MoviesShedule("dfsf",51,0);
+        MoviesShedule moviesShedule = new MoviesShedule("dfsf","50","50");
         ArrayList<MoviesShedule> moviesShedules = moviesShedule.readmoviesSheduleList();
-        System.out.println(moviesShedules.size());
         for (int i = 0; i < moviesShedules.size(); i++) {
             System.out.println(moviesShedules.get(i).toString());
         }
