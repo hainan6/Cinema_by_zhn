@@ -2,8 +2,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Random;
 import java.util.Scanner;
 public class User {
      String username;
@@ -27,51 +29,25 @@ public class User {
         return "用户名:"+this.username+"\n手机号："+this.phoneNumber+"\n邮箱："+this.email+"\n注册时间："+this.UserRegistrationTime+"\n用户等级："+this.userLevel+"\n消费总金额："+this.totalAmountSpent+"\n消费总次数："+this.numberOfPurchases;
     }
 
-     User creatUser(){
-        Date currentDate = new Date();
-        // 创建 SimpleDateFormat 对象以指定日期时间格式
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        // 使用 SimpleDateFormat 格式化日期时间
-        String registrationTime = dateFormat.format(currentDate);
-        User user = new User();
-        System.out.println("请输入账号:");
-        user.username=User.scanner.next();
-        System.out.println("请输入密码:");
-        user.password=User.scanner.next();
-        System.out.println("请输入电话号码");
-        user.phoneNumber=User.scanner.next();
-        System.out.println("请输入邮箱");
-        user.email=User.scanner.next();
-        user.UserRegistrationTime = registrationTime;
-        return user;
-    }
     public static String setUserRegistrationTime(){
         Date currentDate = new Date();
         // 创建 SimpleDateFormat 对象以指定日期时间格式
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         // 使用 SimpleDateFormat 格式化日期时间
-        String registrationTime = dateFormat.format(currentDate);
-        return registrationTime;
+        return dateFormat.format(currentDate);
     }
 
-    void purchaseTicket(){
-
-    }
 
     boolean updatePassword(User user) throws SQLException, ClassNotFoundException {
         Connection connection = linkMySql.linkMysql();
+        Hash hash = new Hash();
         if(connection != null){
             try {
                     String updateSQL = "UPDATE users SET password = ? WHERE username = ?";
                     PreparedStatement preparedStatement1 = connection.prepareStatement(updateSQL);//执行sql语句
-
                     // 设置要更新的值和条件
-                Hash hash = new Hash();
-                user.password=hash.md5(user.password);
-                    preparedStatement1.setString(1, user.password);
-
+                    preparedStatement1.setString(1, hash.md5(user.password));
                     preparedStatement1.setString(2, user.username); // 根据ID更新数据
-
                     // 执行更新操作
                     int rowsUpdated = preparedStatement1.executeUpdate();
                     connection.close();//关闭连接
@@ -198,6 +174,33 @@ public class User {
             return false;
         }
     }
+
+
+     public boolean forgottenPassword(User user) throws SQLException, ClassNotFoundException {
+         ArrayList<User> userArrayList;
+         boolean tag = false;
+         boolean tag2 = false;
+         Admin admin = new Admin();
+         EmailSender emailSender = new EmailSender();
+         try {
+             userArrayList=admin.readUserInformation();
+         } catch (SQLException ex) {
+             throw new RuntimeException(ex);
+         } catch (ClassNotFoundException ex) {
+             throw new RuntimeException(ex);
+         }
+         for (int i = 0; i < userArrayList.size(); i++) {
+             if(userArrayList.get(i).phoneNumber.equals(user.phoneNumber) && userArrayList.get(i).email.equals(user.email) &&userArrayList.get(i).username.equals(user.username)){
+                 user.username = userArrayList.get(i).username;
+                 String newPassword = RandomPassword.generateRandomString();
+                 user.password = newPassword;
+                 tag = updatePassword(user);//更新数据库密码
+                 tag2=emailSender.forgetPasswordEmail(user);
+             }
+         }
+
+         return tag&&tag2;
+     }
 
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {

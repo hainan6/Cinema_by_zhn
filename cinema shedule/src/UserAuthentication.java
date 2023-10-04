@@ -32,8 +32,7 @@ public class UserAuthentication {
                     String sql = "INSERT INTO users (username, password,phoneNumber,email,UserRegistrationTime,userLevel,totalAmountSpent,numberOfPurchases) VALUES ( ?, ?,?,?,?,?,?,?)";
                     PreparedStatement preparedStatement = connection.prepareStatement(sql);
                     preparedStatement.setString(1, user.username);
-                    user.password=hash.md5(user.password);
-                    preparedStatement.setString(2, user.password);
+                    preparedStatement.setString(2,hash.md5(user.password));////MD5加密密码
                     preparedStatement.setString(3, user.phoneNumber);
                     preparedStatement.setString(4, user.email);
                     preparedStatement.setString(5, user.UserRegistrationTime);
@@ -104,9 +103,8 @@ public class UserAuthentication {
             String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
-            user.password=hash.md5(user.password);//MD5加密密码
             preparedStatement.setString(1, user.username);
-            preparedStatement.setString(2, user.password);
+            preparedStatement.setString(2, hash.md5(user.password));//MD5加密密码
 
             ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.next();
