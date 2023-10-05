@@ -8,23 +8,11 @@ public class Admin {
     String username;
     String password;
 
-    Movie movie = new Movie();
-    User user = new User();
     static Link_MySql linkMySql = new Link_MySql();
 
     ArrayList<User> arrayListUser = new ArrayList();
 
     UserAuthentication userAuthentication = new UserAuthentication();
-
-     void printUserPassword() throws SQLException, ClassNotFoundException {
-
-        arrayListUser = userAuthentication.readMySqL();
-
-        for (int i = 0; i < arrayListUser.size(); i++) {
-            System.out.println(arrayListUser.get(i));
-        }
-
-    }
 
     boolean updateUserPassword(User user) throws SQLException, ClassNotFoundException {
         Connection connection = linkMySql.linkMysql();
@@ -83,9 +71,6 @@ public class Admin {
         else {
             return false;
         }
-    }
-    void userPasswordManager(){
-
     }
 
     public ArrayList<User> readUserInformation() throws SQLException, ClassNotFoundException {
@@ -153,11 +138,5 @@ public class Admin {
             return false;
         }
     }
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-         Admin admin = new Admin();
-         ArrayList<User> userArrayList = admin.readUserInformation();
-        for (int i = 0; i < userArrayList.size(); i++) {
-            System.out.println(userArrayList.get(i).username);
-        }
-    }
+
 }

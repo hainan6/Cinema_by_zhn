@@ -10,11 +10,8 @@ import java.util.Date;
 
 public class CinemaApp {
     private JFrame logAndSignframe;
-    private JPanel panel;
     private JTextField usernameField;
     private JPasswordField passwordField;
-    private JButton loginButton;
-    private JButton registerButton;
     private JComboBox<String> userTypeComboBox;
 
     UserAuthentication userAuthentication = new UserAuthentication();
@@ -23,7 +20,7 @@ public class CinemaApp {
 
         logAndSignframe = new JFrame("云大影院");
         logAndSignframe.setResizable(false);
-        panel = new JPanel();
+        JPanel panel = new JPanel();
         logAndSignframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         logAndSignframe.setBounds(600, 400, 350, 200);
         logAndSignframe.add(panel);
@@ -68,14 +65,14 @@ public class CinemaApp {
         constraints.gridwidth = 2;
         panel.add(userTypeComboBox, constraints);
 
-        loginButton = new JButton("登  录");
+        JButton loginButton = new JButton("登  录");
         constraints.gridx = 1;
         constraints.gridy = 4;
         constraints.gridwidth = 1;
         constraints.insets = new Insets(5,5,5,5);
         panel.add(loginButton, constraints);
 
-        registerButton = new JButton("注册");
+        JButton registerButton = new JButton("注册");
         constraints.gridx = 2;
         constraints.gridy = 4;
         constraints.gridwidth = 1;
@@ -87,83 +84,77 @@ public class CinemaApp {
         constraints.gridwidth = 1;
         panel.add(forgottenPasswordButton, constraints);
 
-        forgottenPasswordButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String selectedUserType = (String) userTypeComboBox.getSelectedItem();
-                if (selectedUserType.equals("用户")) {
-                    logAndSignframe.setVisible(false);
-                    JOptionPane.showMessageDialog(logAndSignframe, "请输入注册时的用户名、手机号与邮箱，稍后将会把新密码发送至您的邮箱！");
+        forgottenPasswordButton.addActionListener(e -> {
+            String selectedUserType = (String) userTypeComboBox.getSelectedItem();
+            if (selectedUserType.equals("用户")) {
+                logAndSignframe.setVisible(false);
+                JOptionPane.showMessageDialog(logAndSignframe, "请输入注册时的用户名、手机号与邮箱，稍后将会把新密码发送至您的邮箱！");
 
-                    JFrame forgottenPasswordframe = new JFrame("忘记密码");
-                    forgottenPasswordframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    forgottenPasswordframe.setResizable(false);
-                    forgottenPasswordframe.setBounds(400, 400,400,200);
-                    forgottenPasswordframe.setLayout(new GridLayout(2, 1));
+                JFrame forgottenPasswordframe = new JFrame("忘记密码");
+                forgottenPasswordframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                forgottenPasswordframe.setResizable(false);
+                forgottenPasswordframe.setBounds(400, 400,400,200);
+                forgottenPasswordframe.setLayout(new GridLayout(2, 1));
 
-                    JLabel usernameLabel = new JLabel("用户名:");
-                    JLabel phoneLabel = new JLabel("手机号码:");
-                    JLabel emailLabel = new JLabel("邮箱:");
-                    JTextField usernameField = new JTextField();
-                    JTextField phoneField = new JTextField();
-                    JTextField emailField = new JTextField();
-                    JButton confirmButton = new JButton("确定");
-                    JButton backButton = new JButton("返回");
+                JLabel usernameLabel1 = new JLabel("用户名:");
+                JLabel phoneLabel = new JLabel("手机号码:");
+                JLabel emailLabel = new JLabel("邮箱:");
+                JTextField usernameField = new JTextField();
+                JTextField phoneField = new JTextField();
+                JTextField emailField = new JTextField();
+                JButton confirmButton = new JButton("确定");
+                JButton backButton = new JButton("返回");
 
-                    JPanel inputPanel = new JPanel();
-                    inputPanel.setLayout(new GridLayout(3, 2));
-                    inputPanel.add(usernameLabel);
-                    inputPanel.add(usernameField);
-                    inputPanel.add(phoneLabel);
-                    inputPanel.add(phoneField);
-                    inputPanel.add(emailLabel);
-                    inputPanel.add(emailField);
+                JPanel inputPanel = new JPanel();
+                inputPanel.setLayout(new GridLayout(3, 2));
+                inputPanel.add(usernameLabel1);
+                inputPanel.add(usernameField);
+                inputPanel.add(phoneLabel);
+                inputPanel.add(phoneField);
+                inputPanel.add(emailLabel);
+                inputPanel.add(emailField);
 
-                    JPanel buttonPanel = new JPanel();
-                    buttonPanel.setLayout(new FlowLayout());
-                    buttonPanel.add(confirmButton);
-                    buttonPanel.add(backButton);
+                JPanel buttonPanel = new JPanel();
+                buttonPanel.setLayout(new FlowLayout());
+                buttonPanel.add(confirmButton);
+                buttonPanel.add(backButton);
 
-                    forgottenPasswordframe.add(inputPanel);
-                    forgottenPasswordframe.add(buttonPanel);
+                forgottenPasswordframe.add(inputPanel);
+                forgottenPasswordframe.add(buttonPanel);
 
-                    confirmButton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            User user = new User();
-                            User userdemo = new User();
-                            user.username = usernameField.getText();
-                            user.phoneNumber = phoneField.getText();
-                            user.email = emailField.getText();
-                            try {
-                                if (userdemo.forgottenPassword(user)) {
-                                    JOptionPane.showMessageDialog(forgottenPasswordframe, "新密码已发送至您的邮箱，请查收！");
-                                    forgottenPasswordframe.dispose();
-                                    logAndSignframe.setVisible(true);
-                                }else{
-                                    JOptionPane.showMessageDialog(forgottenPasswordframe, "输入信息有误，系统内暂无该用户信息！");
-                                }
-                            } catch (SQLException ex) {
-                                throw new RuntimeException(ex);
-                            } catch (ClassNotFoundException ex) {
-                                throw new RuntimeException(ex);
+                confirmButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        User user = new User();
+                        User userdemo = new User();
+                        user.username = usernameField.getText();
+                        user.phoneNumber = phoneField.getText();
+                        user.email = emailField.getText();
+                        try {
+                            if (userdemo.forgottenPassword(user)) {
+                                JOptionPane.showMessageDialog(forgottenPasswordframe, "新密码已发送至您的邮箱，请查收！");
+                                forgottenPasswordframe.dispose();
+                                logAndSignframe.setVisible(true);
+                            }else{
+                                JOptionPane.showMessageDialog(forgottenPasswordframe, "输入信息有误，系统内暂无该用户信息！");
                             }
-
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        } catch (ClassNotFoundException ex) {
+                            throw new RuntimeException(ex);
                         }
-                    });
-                    backButton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            forgottenPasswordframe.dispose();
-                            logAndSignframe.setVisible(true);
-                        }
-                    });
 
-                    forgottenPasswordframe.setVisible(true);
-                }
-                else {
-                    JOptionPane.showMessageDialog(logAndSignframe, "忘记密码仅开放于用户！");
-                }
+                    }
+                });
+                backButton.addActionListener(e1 -> {
+                    forgottenPasswordframe.dispose();
+                    logAndSignframe.setVisible(true);
+                });
+
+                forgottenPasswordframe.setVisible(true);
+            }
+            else {
+                JOptionPane.showMessageDialog(logAndSignframe, "忘记密码仅开放于用户！");
             }
         });
 
@@ -371,17 +362,6 @@ public class CinemaApp {
     }
 
 
-    private void showLoginSuccessPopup() {//登陆成功
-        logAndSignframe.setVisible(false);
-        JFrame successFrame = new JFrame("登录成功");
-        successFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // 关闭弹出窗口时不影响主窗口
-        successFrame.setBounds(600, 400, 300, 100);
-        JLabel successLabel = new JLabel("登录成功！");
-        successLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        successFrame.add(successLabel);
-        successFrame.setVisible(true);
-    }
-
     private void showLoginFailPopup() {//登陆失败
         JFrame successFrame = new JFrame("");
         successFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // 关闭弹出窗口时不影响主窗口
@@ -390,58 +370,6 @@ public class CinemaApp {
         successLabel.setHorizontalAlignment(SwingConstants.CENTER);
         successFrame.add(successLabel);
         successFrame.setVisible(true);
-    }
-
-    private void showLoginNoUsernameAndPassword() {
-        JDialog dialog = new JDialog(logAndSignframe, "登录提示", true);
-        dialog.setLayout(new BorderLayout());
-
-        JLabel label = new JLabel("请输入账号和密码");
-        dialog.add(label, BorderLayout.NORTH);
-
-        JButton okButton = new JButton("确定");
-        okButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dialog.dispose(); // 关闭对话框
-            }
-        });
-
-        dialog.add(okButton, BorderLayout.SOUTH);
-
-        dialog.setBounds(400, 400, 200, 100);
-        dialog.setVisible(true);
-    }
-
-    private void showRegisterNoPower() {
-        // 创建一个新的Swing窗口
-        JFrame frame = new JFrame("权限提示");
-        //创建一个标签用于显示提示信息
-        JLabel label = new JLabel("您无此权限，请联系管理员");
-
-        JButton closeButton = new JButton("关闭");
-
-        // 添加关闭按钮的事件处理程序
-        closeButton.addActionListener(e -> {
-            frame.dispose(); // 关闭窗口
-        });
-
-        // 创建一个面板，并将标签和按钮添加到面板中
-        JPanel panel = new JPanel();
-        panel.add(label);
-        panel.add(closeButton);
-        // 将面板添加到窗口中
-        frame.getContentPane().add(panel);
-        // 设置窗口大小
-        frame.setBounds(620, 420, 300, 100);
-        // 设置窗口可见
-        frame.setVisible(true);
-        // 创建一个按钮，用于关闭弹窗
-
-    }
-
-    private void openSystem(User user) {
-        logAndSignframe.dispose();
     }
 
 
@@ -598,7 +526,6 @@ public class CinemaApp {
                                 String username = usernameField.getText();
                                 String newPassword = newPasswordField.getText();
 
-                                UserAuthentication userAuthentication = new UserAuthentication();
                                 User user = new User();
                                 Admin admin = new Admin();
                                 user.username = username;
@@ -632,23 +559,17 @@ public class CinemaApp {
                             }
                         });
 
-                        backButton.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                // 返回上一步，关闭当前对话框
-                                userPasswordChangeDialog.dispose();
-                                passwordManagementFrame.setVisible(true);
-                            }
+                        backButton.addActionListener(e12 -> {
+                            // 返回上一步，关闭当前对话框
+                            userPasswordChangeDialog.dispose();
+                            passwordManagementFrame.setVisible(true);
                         });
                     }
                 });
 
-                backButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        passwordManagementFrame.dispose();//返回上一步
-                        adminSystemframe.setVisible(true);
-                    }
+                backButton.addActionListener(e13 -> {
+                    passwordManagementFrame.dispose();//返回上一步
+                    adminSystemframe.setVisible(true);
                 });
 
                 passwordManagementFrame.setVisible(true);
@@ -723,112 +644,108 @@ public class CinemaApp {
                     }
                 });
 
-                deleteUserButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        // 在这里执行删除用户信息的逻辑
-                        // 这里仅显示一个弹窗来演示
-                        //JOptionPane.showMessageDialog(userManagementDialog, "删除用户信息");
-                        JFrame deleteUserframe = new JFrame("用户信息删除");
-                        deleteUserframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                        deleteUserframe.setSize(400, 150);
-                        deleteUserframe.setLayout(new GridLayout(2, 1));
-                        deleteUserframe.setLocationRelativeTo(null);
+                deleteUserButton.addActionListener(e1 -> {
+                    // 在这里执行删除用户信息的逻辑
+                    // 这里仅显示一个弹窗来演示
+                    //JOptionPane.showMessageDialog(userManagementDialog, "删除用户信息");
+                    JFrame deleteUserframe = new JFrame("用户信息删除");
+                    deleteUserframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    deleteUserframe.setSize(400, 150);
+                    deleteUserframe.setLayout(new GridLayout(2, 1));
+                    deleteUserframe.setLocationRelativeTo(null);
 
-                        userManagementDialog.setVisible(false);
+                    userManagementDialog.setVisible(false);
 
-                        JDialog userList = userList(deleteUserframe);
+                    JDialog userList = userList(deleteUserframe);
 
-                        JLabel usernameLabel = new JLabel("请输入用户名:");
-                        JTextField usernameField = new JTextField(20); // 增加文本框大小
-                        JButton confirmButton = new JButton("确认");
-                        JButton backButton = new JButton("返回上一步");
+                    JLabel usernameLabel = new JLabel("请输入用户名:");
+                    JTextField usernameField = new JTextField(20); // 增加文本框大小
+                    JButton confirmButton = new JButton("确认");
+                    JButton backButton1 = new JButton("返回上一步");
 
-                        JPanel inputPanel = new JPanel(new GridBagLayout()); // 使用GridBagLayout布局
-                        GridBagConstraints constraints = new GridBagConstraints();
-                        constraints.insets = new Insets(5, 5, 5, 5); // 增加间距
-                        inputPanel.add(usernameLabel, constraints);
+                    JPanel inputPanel = new JPanel(new GridBagLayout()); // 使用GridBagLayout布局
+                    GridBagConstraints constraints = new GridBagConstraints();
+                    constraints.insets = new Insets(5, 5, 5, 5); // 增加间距
+                    inputPanel.add(usernameLabel, constraints);
 
-                        constraints.gridx = 1;
-                        inputPanel.add(usernameField, constraints);
+                    constraints.gridx = 1;
+                    inputPanel.add(usernameField, constraints);
 
-                        JPanel buttonPanel = new JPanel();
-                        buttonPanel.setLayout(new FlowLayout());
-                        buttonPanel.add(confirmButton);
-                        buttonPanel.add(backButton);
+                    JPanel buttonPanel = new JPanel();
+                    buttonPanel.setLayout(new FlowLayout());
+                    buttonPanel.add(confirmButton);
+                    buttonPanel.add(backButton1);
 
-                        deleteUserframe.add(inputPanel);
-                        deleteUserframe.add(buttonPanel);
+                    deleteUserframe.add(inputPanel);
+                    deleteUserframe.add(buttonPanel);
 
-                        confirmButton.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                String username = usernameField.getText();
-                                // 弹出确认删除窗口
-                                JDialog deletedialog = new JDialog(deleteUserframe, "确认删除用户");
-                                deletedialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                                deletedialog.setSize(300, 150);
-                                deletedialog.setLayout(new GridLayout(2, 1));
-                                deletedialog.setLocationRelativeTo(null);
-                                JLabel confirmationLabel = new JLabel("确认删除用户 " + username + " 的信息吗？");
-                                JButton deleteButton = new JButton("删除");
-                                JButton cancelButton = new JButton("取消");
+                    confirmButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e1) {
+                            String username = usernameField.getText();
+                            // 弹出确认删除窗口
+                            JDialog deletedialog = new JDialog(deleteUserframe, "确认删除用户");
+                            deletedialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                            deletedialog.setSize(300, 150);
+                            deletedialog.setLayout(new GridLayout(2, 1));
+                            deletedialog.setLocationRelativeTo(null);
+                            JLabel confirmationLabel = new JLabel("确认删除用户 " + username + " 的信息吗？");
+                            JButton deleteButton = new JButton("删除");
+                            JButton cancelButton = new JButton("取消");
 
-                                JPanel confirmationPanel = new JPanel();
-                                confirmationPanel.setLayout(new FlowLayout());
-                                confirmationPanel.add(confirmationLabel);
+                            JPanel confirmationPanel = new JPanel();
+                            confirmationPanel.setLayout(new FlowLayout());
+                            confirmationPanel.add(confirmationLabel);
 
-                                JPanel buttonPanel = new JPanel();
-                                buttonPanel.setLayout(new FlowLayout());
-                                buttonPanel.add(deleteButton);
-                                buttonPanel.add(cancelButton);
+                            JPanel buttonPanel = new JPanel();
+                            buttonPanel.setLayout(new FlowLayout());
+                            buttonPanel.add(deleteButton);
+                            buttonPanel.add(cancelButton);
 
-                                deletedialog.add(confirmationPanel);
-                                deletedialog.add(buttonPanel);
+                            deletedialog.add(confirmationPanel);
+                            deletedialog.add(buttonPanel);
 
-                                deleteButton.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-                                        // 在这里执行删除用户信息的逻辑
+                            deleteButton.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e1) {
+                                    // 在这里执行删除用户信息的逻辑
 
-                                        if (Admin.deleteUserByUsername(username)) {
-                                            JOptionPane.showMessageDialog(deletedialog, "用户信息已删除。");
-                                            deletedialog.dispose();
-                                            deleteUserframe.dispose();
-                                            userManagementDialog.setVisible(true);
-
-                                        } else {
-                                            JOptionPane.showMessageDialog(deletedialog, "暂无该名用户信息。");
-                                        }
+                                    if (Admin.deleteUserByUsername(username)) {
+                                        JOptionPane.showMessageDialog(deletedialog, "用户信息已删除。");
                                         deletedialog.dispose();
+                                        deleteUserframe.dispose();
+                                        userManagementDialog.setVisible(true);
+
+                                    } else {
+                                        JOptionPane.showMessageDialog(deletedialog, "暂无该名用户信息。");
                                     }
-                                });
+                                    deletedialog.dispose();
+                                }
+                            });
 
-                                cancelButton.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-                                        // 取消删除，关闭确认删除窗口
-                                        deletedialog.dispose();
-                                    }
-                                });
+                            cancelButton.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e1) {
+                                    // 取消删除，关闭确认删除窗口
+                                    deletedialog.dispose();
+                                }
+                            });
 
-                                deletedialog.setVisible(true);
-                            }
-                        });
+                            deletedialog.setVisible(true);
+                        }
+                    });
 
-                        backButton.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                // 返回上一步，关闭当前窗口
-                                deleteUserframe.dispose();
-                                userList.dispose();
-                                userManagementDialog.setVisible(true);
-                            }
-                        });
+                    backButton1.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e1) {
+                            // 返回上一步，关闭当前窗口
+                            deleteUserframe.dispose();
+                            userList.dispose();
+                            userManagementDialog.setVisible(true);
+                        }
+                    });
 
-                        deleteUserframe.setVisible(true);
-                    }
-
+                    deleteUserframe.setVisible(true);
                 });
 
                 findUserButton.addActionListener(new ActionListener() {
@@ -938,6 +855,8 @@ public class CinemaApp {
         managerSystemframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         managerSystemframe.setSize(400, 200);
         managerSystemframe.setLayout(new GridLayout(3, 1));
+        managerSystemframe.setLocationRelativeTo(null);
+        managerSystemframe.setResizable(false);
 
         JButton moviesManagementButton = new JButton("影片管理");
         JButton arrangeMoviesManagementButton = new JButton("排片管理");
@@ -953,6 +872,7 @@ public class CinemaApp {
                 managerSystemframe.setVisible(false);
                 JDialog moviesManagementDialog = new JDialog(managerSystemframe, "影片管理");
                 moviesManagementDialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                moviesManagementDialog.setLocationRelativeTo(null);
                 moviesManagementDialog.setSize(300, 300);
                 moviesManagementDialog.setLayout(new GridLayout(6, 1));
 
@@ -1301,6 +1221,7 @@ public class CinemaApp {
                         deleteMovieframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                         deleteMovieframe.setSize(400, 150);
                         deleteMovieframe.setLayout(new GridLayout(2, 1));
+                        deleteMovieframe.setLocationRelativeTo(null);
 
                         JLabel movieNameLabel = new JLabel("请输入电影名:");
                         JTextField movieNameField = new JTextField(20); // 增加文本框大小
@@ -1331,6 +1252,7 @@ public class CinemaApp {
                                 JDialog deletedialog = new JDialog(deleteMovieframe, "确认删除信息");
                                 deletedialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                                 deletedialog.setSize(300, 150);
+                                deletedialog.setLocationRelativeTo(null);
                                 deletedialog.setLayout(new GridLayout(2, 1));
 
                                 JLabel confirmationLabel = new JLabel("确认删除电影 " + movieName + " 的信息吗？");
@@ -1488,6 +1410,8 @@ public class CinemaApp {
                 managerSystemframe.setVisible(false);
                 JDialog movieScheduleManagementDialog = new JDialog(managerSystemframe, "排片管理");
                 movieScheduleManagementDialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                movieScheduleManagementDialog.setLocationRelativeTo(null);
+                movieScheduleManagementDialog.setResizable(false);
                 movieScheduleManagementDialog.setSize(300, 300);
                 movieScheduleManagementDialog.setLayout(new GridLayout(5, 1));
 
@@ -1522,6 +1446,7 @@ public class CinemaApp {
                         arrangeMovieScheduleJdialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
                         arrangeMovieScheduleJdialog.setSize(400, 350);
                         arrangeMovieScheduleJdialog.getContentPane().setBackground(Color.LIGHT_GRAY);
+                        arrangeMovieScheduleJdialog.setLocationRelativeTo(null);
 
                         JPanel panel = new JPanel(new GridLayout(5, 2, 10, 10));
 
@@ -1619,12 +1544,12 @@ public class CinemaApp {
                     public void actionPerformed(ActionEvent e) {
                         //todo 怎么更新呀
                         movieScheduleManagementDialog.setVisible(false);
-                        JDialog deleteMovieframe = new JDialog(movieScheduleManagementDialog, "电影排片信息删除");
-                        deleteMovieframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                        deleteMovieframe.setSize(400, 150);
-                        deleteMovieframe.setLayout(new GridLayout(2, 1));
+                        JDialog deleteMovieScheduleframe = new JDialog(movieScheduleManagementDialog, "电影排片信息删除");
+                        deleteMovieScheduleframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        deleteMovieScheduleframe.setSize(400, 150);
+                        deleteMovieScheduleframe.setLayout(new GridLayout(2, 1));
 
-                        moviesScheduleList(deleteMovieframe);
+                        moviesScheduleList(deleteMovieScheduleframe);
 
                         JLabel movie_NameLabel = new JLabel("请输入ID:");
                         JTextField movie_NameField = new JTextField(20); // 增加文本框大小
@@ -1644,15 +1569,14 @@ public class CinemaApp {
                         buttonPanel.add(confirm_Button);
                         buttonPanel.add(back_Button);
 
-                        deleteMovieframe.add(inputPanel);
-                        deleteMovieframe.add(buttonPanel);
+                        deleteMovieScheduleframe.add(inputPanel);
+                        deleteMovieScheduleframe.add(buttonPanel);
 
-                        deleteMovieframe.setVisible(true);
+                        deleteMovieScheduleframe.setVisible(true);
                         confirm_Button.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 //todo 修改影片信息即根据ID修改
-
                                 Calendar calendar = Calendar.getInstance();
                                 Date currentDate = calendar.getTime();
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("MM月dd日");
@@ -1775,6 +1699,7 @@ public class CinemaApp {
                         deleteMovieScheduleframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                         deleteMovieScheduleframe.setSize(400, 150);
                         deleteMovieScheduleframe.setLayout(new GridLayout(2, 1));
+                        deleteMovieScheduleframe.setLocationRelativeTo(null);
 
                         JLabel movieNameLabel = new JLabel("请输入电影名:");
                         JTextField movieNameField = new JTextField(20); // 增加文本框大小
@@ -2044,10 +1969,12 @@ public class CinemaApp {
                             if (userAuthentication.authenticateUser(user)) {//此处用登陆验证原密码正确
                                 //确认新密码符合要求
                                 if (UserAuthentication.isValidPassword(newPassword)) {
+                                    user.password = newPassword;
                                     // 修改密码
                                     if (user.updatePassword(user)) {
                                         JOptionPane.showMessageDialog(passwordChangeDialog, "密码修改成功！");
                                         passwordChangeDialog.dispose();
+                                        userSystemframe.setVisible(true);
                                     } else JOptionPane.showMessageDialog(passwordChangeDialog, "连接故障，请重试！");
                                 } else {
                                     JOptionPane.showMessageDialog(passwordChangeDialog, "新密码不符合规范 8<密码<15位且只包含字母和数字，请重试！");
@@ -2454,7 +2381,7 @@ public class CinemaApp {
         selectFrame.setSize(800, 240);
         selectFrame.setVisible(true);
     }
-    
+
     public static void paymentFrame(JFrame jFrame,JFrame userjFrame) {
         // 创建一个 JFrame
         JFrame paymentFrame = new JFrame("支付窗口");
@@ -2471,7 +2398,7 @@ public class CinemaApp {
                 userjFrame.setVisible(true);
             }
         });
-        ImageIcon imageIcon = new ImageIcon("zhifu.jpg");
+        ImageIcon imageIcon = new ImageIcon("C:\\Users\\Mcola.Tech\\Desktop\\GitHub\\Cinema_by_zhn\\cinema shedule\\src\\zhifu.jpg");
         label.setIcon(imageIcon);
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(button);
@@ -2521,17 +2448,13 @@ public class CinemaApp {
         return userListDialog;
     }
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-//        SwingUtilities.invokeLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                new CinemaApp();
-//            }
-//        });
-        CinemaApp cinemaApp = new CinemaApp();
-        CinemaApp.adminSystem();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new CinemaApp().cinemaApp();
+            }
+        });
 
-        //CinemaApp.userSystem();
-        //CinemaApp.selectSeats(Movie.readScreeningseat());
     }
 }
 

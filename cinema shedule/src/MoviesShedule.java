@@ -16,6 +16,20 @@ public class MoviesShedule {
 
     ArrayList<MoviesShedule> moviesSheduleArrayList = new ArrayList<>();
 
+    public MoviesShedule(){}
+    public MoviesShedule(String name,String price ,String hallNum ){
+        this.moiveName=name;
+        this.price=price;
+        this.hallNum=hallNum;
+        Date currentDate = new Date(1203,0,1,9,30);//1900开始算 month从0开始算
+        // 创建 SimpleDateFormat 对象以指定日期时间格式
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        // 使用 SimpleDateFormat 格式化日期时间
+        String registrationTime = dateFormat.format(currentDate);
+
+        this.showtime= registrationTime;
+        System.out.println(this.showtime);
+    }
     boolean insertMovieShedule(MoviesShedule moviesShedule) throws SQLException, ClassNotFoundException {
         try (Connection connection = linkMySql.linkMysql()) {
             // 构建插入SQL语句
@@ -37,7 +51,6 @@ public class MoviesShedule {
         }
         return false;
     }
-
     boolean deleteMovieScheduleByid(int id){
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -60,35 +73,6 @@ public class MoviesShedule {
             return false;
         }
     }
-
-
-
-//    boolean updateMovieShedule(MoviesShedule moviesShedule) throws SQLException, ClassNotFoundException {
-//        boolean tag1 = deleteMovieSheduleByid(moviesShedule.id);
-//        boolean tag2 = insertMovieShedule(moviesShedule);
-//
-//        if(tag1 == false){
-//            return false;
-//        }
-//        if (tag1 && tag2){
-//            return true;
-//        }else return false;
-//    }
-    public MoviesShedule(){}
-    public MoviesShedule(String name,String price ,String hallNum ){
-        this.moiveName=name;
-        this.price=price;
-        this.hallNum=hallNum;
-        Date currentDate = new Date(1203,0,1,9,30);//1900开始算 month从0开始算
-        // 创建 SimpleDateFormat 对象以指定日期时间格式
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        // 使用 SimpleDateFormat 格式化日期时间
-        String registrationTime = dateFormat.format(currentDate);
-
-        this.showtime= registrationTime;
-        System.out.println(this.showtime);
-    }
-
     @Override
     public String toString() {
         return "ID:"+id+"电影名:" + moiveName +
@@ -96,7 +80,6 @@ public class MoviesShedule {
                 "放映时间:" + showtime +
                 "票价:" + price ;
     }
-
     public ArrayList<MoviesShedule> readmoviesSheduleList() throws SQLException, ClassNotFoundException {
         Connection connection = linkMySql.linkMysql();
         if(connection != null){
@@ -128,7 +111,6 @@ public class MoviesShedule {
             return null;
         }
     }
-
     boolean updateMovieSchedule(MoviesShedule moviesShedule) throws SQLException, ClassNotFoundException {
         Connection connection = linkMySql.linkMysql();
         if(connection != null){
@@ -160,7 +142,6 @@ public class MoviesShedule {
             return false;
 
     }
-
     boolean isEmpty() {
         boolean result;
         if (this.moiveName.isEmpty() || this.hallNum.isEmpty() || this.showtime.isEmpty() || this.price.isEmpty()) {
@@ -170,15 +151,4 @@ public class MoviesShedule {
         }
         return result;
     }
-
-
-
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        MoviesShedule moviesShedule = new MoviesShedule("dfsf","50","50");
-        ArrayList<MoviesShedule> moviesShedules = moviesShedule.readmoviesSheduleList();
-        for (int i = 0; i < moviesShedules.size(); i++) {
-            System.out.println(moviesShedules.get(i).toString());
-        }
-    }
-
 }
